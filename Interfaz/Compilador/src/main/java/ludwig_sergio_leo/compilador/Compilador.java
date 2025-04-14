@@ -1,12 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package ludwig_sergio_leo.compilador;
 
 /**
- *
- * @author PC
+ * @author Ludwig Ivan Ortiz Sierra
+ * @author Sergio Octavio Cervante Mujica
+ * @author Leonardo Leon Moreno
  */
 public class Compilador {
 
@@ -15,5 +12,6 @@ public class Compilador {
         
         principal.setVisible(true);
         principal.setLocationRelativeTo(null);
+        
     }
 }
