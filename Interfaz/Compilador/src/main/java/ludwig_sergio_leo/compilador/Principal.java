@@ -15,13 +15,17 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Nuevo = new javax.swing.JButton();
+        Guardar = new javax.swing.JButton();
+        Abrir = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        Deshacer = new javax.swing.JButton();
+        Rehacer = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        Debug = new javax.swing.JButton();
+        Ejecutar = new javax.swing.JButton();
+        Terminar = new javax.swing.JButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
@@ -51,69 +55,100 @@ public class Principal extends javax.swing.JFrame {
         jToolBar1.setBorder(null);
         jToolBar1.setRollover(true);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(51, 51, 255));
-        jButton1.setText("💾");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton1.setVerifyInputWhenFocusTarget(false);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Nuevo.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Nuevo.setForeground(new java.awt.Color(51, 51, 255));
+        Nuevo.setText("➕");
+        Nuevo.setFocusable(false);
+        Nuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Nuevo.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Nuevo.setVerifyInputWhenFocusTarget(false);
+        Nuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Nuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                NuevoActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        jToolBar1.add(Nuevo);
 
-        jButton6.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(204, 204, 0));
-        jButton6.setText("📁");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton6);
+        Guardar.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Guardar.setForeground(new java.awt.Color(51, 51, 255));
+        Guardar.setText("💾");
+        Guardar.setFocusable(false);
+        Guardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Guardar.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Guardar.setVerifyInputWhenFocusTarget(false);
+        Guardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GuardarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(Guardar);
 
-        jSeparator1.setPreferredSize(new java.awt.Dimension(15, 0));
-        jSeparator1.setSeparatorSize(new java.awt.Dimension(15, 0));
-        jToolBar1.add(jSeparator1);
+        Abrir.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Abrir.setForeground(new java.awt.Color(51, 51, 255));
+        Abrir.setText("📁");
+        Abrir.setFocusable(false);
+        Abrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Abrir.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Abrir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Abrir);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 153, 0));
-        jButton2.setText("⏮");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        jSeparator2.setPreferredSize(new java.awt.Dimension(15, 0));
+        jSeparator2.setSeparatorSize(new java.awt.Dimension(15, 0));
+        jToolBar1.add(jSeparator2);
 
-        jButton4.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(51, 204, 0));
-        jButton4.setText("▶");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
+        Deshacer.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Deshacer.setForeground(new java.awt.Color(255, 153, 0));
+        Deshacer.setText("↩");
+        Deshacer.setFocusable(false);
+        Deshacer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Deshacer.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Deshacer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Deshacer);
 
-        jButton5.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 0, 0));
-        jButton5.setText("🚫");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton5);
+        Rehacer.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Rehacer.setForeground(new java.awt.Color(255, 153, 0));
+        Rehacer.setText("↪");
+        Rehacer.setFocusable(false);
+        Rehacer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Rehacer.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Rehacer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Rehacer);
 
-        jButton3.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 153, 0));
-        jButton3.setText("⏭");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setMargin(new java.awt.Insets(5, 5, 0, 5));
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        jSeparator3.setPreferredSize(new java.awt.Dimension(15, 0));
+        jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 0));
+        jToolBar1.add(jSeparator3);
+
+        Debug.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Debug.setForeground(new java.awt.Color(204, 0, 204));
+        Debug.setText("🐺");
+        Debug.setFocusable(false);
+        Debug.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Debug.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Debug.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Debug);
+
+        Ejecutar.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Ejecutar.setForeground(new java.awt.Color(102, 255, 0));
+        Ejecutar.setText("▶");
+        Ejecutar.setFocusable(false);
+        Ejecutar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Ejecutar.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Ejecutar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Ejecutar);
+
+        Terminar.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        Terminar.setForeground(new java.awt.Color(255, 51, 0));
+        Terminar.setText("❌");
+        Terminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Terminar.setMargin(new java.awt.Insets(5, 5, 0, 5));
+        Terminar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(Terminar);
+
+        jSeparator4.setPreferredSize(new java.awt.Dimension(15, 0));
+        jSeparator4.setSeparatorSize(new java.awt.Dimension(15, 0));
+        jToolBar1.add(jSeparator4);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -208,17 +243,23 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_GuardarActionPerformed
+
+    private void NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NuevoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NuevoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton Abrir;
+    private javax.swing.JButton Debug;
+    private javax.swing.JButton Deshacer;
+    private javax.swing.JButton Ejecutar;
+    private javax.swing.JButton Guardar;
+    private javax.swing.JButton Nuevo;
+    private javax.swing.JButton Rehacer;
+    private javax.swing.JButton Terminar;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar2;
@@ -233,7 +274,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
