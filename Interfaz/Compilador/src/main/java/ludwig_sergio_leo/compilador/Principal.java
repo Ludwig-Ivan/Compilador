@@ -1,15 +1,26 @@
 package ludwig_sergio_leo.compilador;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+
 /**
  * @author Ludwig Ivan Ortiz Sierra
  * @author Sergio Octavio Cervante Mujica
  * @author Leonardo Leon Moreno
  */
-public class Principal extends javax.swing.JFrame {
-
-    public Principal() {
+public class Principal extends javax.swing.JFrame{
+    
+    NumeroLinea NumeroDeLineas;
+    
+    public Principal()
+    {
         initComponents();
+        NumeroDeLineas = new NumeroLinea(Editor);
+        ScrollEditor.setRowHeaderView(NumeroDeLineas);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -30,8 +41,8 @@ public class Principal extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        ScrollEditor = new javax.swing.JScrollPane();
+        Editor = new javax.swing.JTextArea();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
@@ -157,12 +168,13 @@ public class Principal extends javax.swing.JFrame {
 
         jSplitPane1.setDividerLocation(600);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Editor", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-        jScrollPane1.setViewportView(jTextArea1);
+        Editor.setBackground(new java.awt.Color(0, 204, 102));
+        Editor.setColumns(20);
+        Editor.setRows(5);
+        Editor.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Editor", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+        ScrollEditor.setViewportView(Editor);
 
-        jSplitPane1.setLeftComponent(jScrollPane1);
+        jSplitPane1.setLeftComponent(ScrollEditor);
 
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
@@ -242,7 +254,7 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
 
     }//GEN-LAST:event_GuardarActionPerformed
@@ -250,15 +262,22 @@ public class Principal extends javax.swing.JFrame {
     private void NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NuevoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_NuevoActionPerformed
-
+    
+    public static void main(String[] args)
+    {
+        SwingUtilities.invokeLater(Principal::new);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Abrir;
     private javax.swing.JButton Debug;
     private javax.swing.JButton Deshacer;
+    private javax.swing.JTextArea Editor;
     private javax.swing.JButton Ejecutar;
     private javax.swing.JButton Guardar;
     private javax.swing.JButton Nuevo;
     private javax.swing.JButton Rehacer;
+    private javax.swing.JScrollPane ScrollEditor;
     private javax.swing.JButton Terminar;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
@@ -270,7 +289,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -280,7 +298,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextArea jTextArea4;
