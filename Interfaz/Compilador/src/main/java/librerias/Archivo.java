@@ -1,5 +1,7 @@
 package librerias;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Clase para manejo de archivos, cada instancia de esta clase hace referencia a
@@ -73,13 +76,36 @@ public class Archivo
 			}
 			catch (IOException e)
 			{
-				System.err.println("Error al leer el archivo");
+				System.err.println("Error al leer el archivo" + e);
 				return null;
 			}
 		else
 			return null;
 
 		return arc;
+	}
+
+	// Convierte el documento en un arreglo String donde cada posicion es un renglon
+	// del documento
+	public Vector<String> toArrayLine()
+	{
+		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()));)
+		{
+			String line;
+			Vector<String> file = new Vector<>();
+
+			while ((line = obb.readLine()) != null)
+				file.add(line);
+
+			return file;
+
+		}
+		catch (Exception e)
+		{
+			System.out.println("Error al leer el documento" + e);
+		}
+
+		return null;
 	}
 
 	/**

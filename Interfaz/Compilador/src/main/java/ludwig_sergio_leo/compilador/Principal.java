@@ -1,26 +1,35 @@
 package ludwig_sergio_leo.compilador;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import librerias.Archivo;
+import librerias.Lex;
 
 /**
  * @author Ludwig Ivan Ortiz Sierra
  * @author Sergio Octavio Cervante Mujica
  * @author Leonardo Leon Moreno
  */
-public class Principal extends javax.swing.JFrame{
-    
+public class Principal extends javax.swing.JFrame {
+
     NumeroLinea NumeroDeLineas;
-    
-    public Principal()
-    {
+
+    // Permite llevar el seguimiento de los archivos abiertos en el compilador
+    Vector<Archivo> archivos = new Vector<>();
+
+    public Principal() {
         initComponents();
         NumeroDeLineas = new NumeroLinea(Editor);
         ScrollEditor.setRowHeaderView(NumeroDeLineas);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -44,11 +53,11 @@ public class Principal extends javax.swing.JFrame{
         ScrollEditor = new javax.swing.JScrollPane();
         Editor = new javax.swing.JTextArea();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TablaTokens = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
-        jPanel3 = new javax.swing.JPanel();
+        Panel_Consola = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea4 = new javax.swing.JTextArea();
         jMenuBar2 = new javax.swing.JMenuBar();
@@ -74,9 +83,9 @@ public class Principal extends javax.swing.JFrame{
         Nuevo.setMargin(new java.awt.Insets(5, 5, 0, 5));
         Nuevo.setVerifyInputWhenFocusTarget(false);
         Nuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Nuevo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NuevoActionPerformed(evt);
+        Nuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NuevoMouseClicked(evt);
             }
         });
         jToolBar1.add(Nuevo);
@@ -89,9 +98,9 @@ public class Principal extends javax.swing.JFrame{
         Guardar.setMargin(new java.awt.Insets(5, 5, 0, 5));
         Guardar.setVerifyInputWhenFocusTarget(false);
         Guardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GuardarActionPerformed(evt);
+        Guardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                GuardarMouseClicked(evt);
             }
         });
         jToolBar1.add(Guardar);
@@ -103,6 +112,11 @@ public class Principal extends javax.swing.JFrame{
         Abrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         Abrir.setMargin(new java.awt.Insets(5, 5, 0, 5));
         Abrir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Abrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AbrirMouseClicked(evt);
+            }
+        });
         jToolBar1.add(Abrir);
 
         jSeparator2.setPreferredSize(new java.awt.Dimension(15, 0));
@@ -147,6 +161,11 @@ public class Principal extends javax.swing.JFrame{
         Ejecutar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         Ejecutar.setMargin(new java.awt.Insets(5, 5, 0, 5));
         Ejecutar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Ejecutar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EjecutarMouseClicked(evt);
+            }
+        });
         jToolBar1.add(Ejecutar);
 
         Terminar.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
@@ -176,11 +195,20 @@ public class Principal extends javax.swing.JFrame{
 
         jSplitPane1.setLeftComponent(ScrollEditor);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        TablaTokens.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(TablaTokens);
 
-        jTabbedPane1.addTab("Tokens", jScrollPane2);
+        jTabbedPane1.addTab("Tokens", jScrollPane1);
 
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
@@ -203,16 +231,16 @@ public class Principal extends javax.swing.JFrame{
 
         jSplitPane2.setLeftComponent(jPanel1);
 
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        Panel_Consola.setLayout(new java.awt.BorderLayout());
 
         jTextArea4.setColumns(20);
         jTextArea4.setRows(5);
         jTextArea4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Consola", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
         jScrollPane4.setViewportView(jTextArea4);
 
-        jPanel3.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+        Panel_Consola.add(jScrollPane4, java.awt.BorderLayout.CENTER);
 
-        jSplitPane2.setRightComponent(jPanel3);
+        jSplitPane2.setRightComponent(Panel_Consola);
 
         jPanel2.add(jSplitPane2, java.awt.BorderLayout.CENTER);
 
@@ -254,20 +282,91 @@ public class Principal extends javax.swing.JFrame{
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
 
-    }//GEN-LAST:event_GuardarActionPerformed
+    // Accion del Boton de Abrir Documento
+    private void AbrirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AbrirMouseClicked
+        JFileChooser fileChooser = new JFileChooser();
+        int resultado = fileChooser.showOpenDialog(null);
 
-    private void NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NuevoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NuevoActionPerformed
-    
-    public static void main(String[] args)
-    {
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivoSeleccionado = fileChooser.getSelectedFile();
+            String ruta = archivoSeleccionado.getAbsolutePath();
+            System.out.println("Ruta seleccionada: " + ruta);
+            Archivo arc = new Archivo(ruta);
+            archivos.add(arc);
+            Editor.setText(arc.toString());
+        }
+    }//GEN-LAST:event_AbrirMouseClicked
+    // Accion del Boton de Nuevo Documento
+    private void NuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NuevoMouseClicked
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // solo directorios
+        int resultado = fileChooser.showOpenDialog(null);
+
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File directorioSeleccionado = fileChooser.getSelectedFile();
+            String ruta = directorioSeleccionado.getAbsolutePath();
+            System.out.println("Directorio seleccionado: " + ruta);
+            String nombreArchivo = JOptionPane.showInputDialog(null, "Ingrese el nombre del nuevo archivo:");
+            if (nombreArchivo != null && !nombreArchivo.trim().isEmpty()) {
+                Archivo arc = new Archivo(ruta, nombreArchivo, ".lcl");
+                archivos.add(arc);
+                Editor.setText(arc.toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Nombre de archivo no válido.");
+            }
+        }
+    }//GEN-LAST:event_NuevoMouseClicked
+
+    private void GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GuardarMouseClicked
+        if (!(Editor.getText().isBlank()) && !archivos.isEmpty()) {
+            Archivo arc = archivos.lastElement();
+            arc.write(Editor.getText());
+        } else {
+            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
+        }
+
+    }//GEN-LAST:event_GuardarMouseClicked
+
+    private void EjecutarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EjecutarMouseClicked
+        if (!archivos.isEmpty()) {
+            Lex obl = new Lex();
+            Archivo arc = archivos.lastElement();
+            HashMap<String, String> obh = obl.Lexico(obl.Pre_Procesado(arc.toArrayLine()));
+            TablaTokens.setModel(convertirTM(obh));
+        } else {
+            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
+        }
+    }//GEN-LAST:event_EjecutarMouseClicked
+
+    private DefaultTableModel convertirTM(HashMap<String, String> tokens) {
+        // Definimos las columnas de la tabla
+        String[] columnas = {"Lexema", "Componente", "Línea", "Posición"};
+
+        // Creamos el modelo vacío
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+
+        // Ordenamos el mapa por las llaves (IDs) usando TreeMap
+        TreeMap<String, String> tokensOrdenados = new TreeMap<>(tokens);
+
+        for (Map.Entry<String, String> entrada : tokensOrdenados.entrySet()) {
+            String datos = entrada.getValue();
+            String[] partes = datos.split(",", -1); // "-1" para que no pierda campos vacíos
+
+            if (partes.length == 4) {
+                modelo.addRow(new Object[]{partes[0], partes[1], partes[2], partes[3]});
+            } else {
+                System.out.println("Error en formato de token (ID " + entrada.getKey() + "): " + datos);
+            }
+        }
+
+        return modelo;
+    }
+
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(Principal::new);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Abrir;
     private javax.swing.JButton Debug;
@@ -276,8 +375,10 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JButton Ejecutar;
     private javax.swing.JButton Guardar;
     private javax.swing.JButton Nuevo;
+    private javax.swing.JPanel Panel_Consola;
     private javax.swing.JButton Rehacer;
     private javax.swing.JScrollPane ScrollEditor;
+    private javax.swing.JTable TablaTokens;
     private javax.swing.JButton Terminar;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
@@ -288,8 +389,7 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar.Separator jSeparator2;
@@ -298,7 +398,6 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextArea jTextArea4;
     private javax.swing.JToolBar jToolBar1;
