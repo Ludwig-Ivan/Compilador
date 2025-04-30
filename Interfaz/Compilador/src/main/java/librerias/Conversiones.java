@@ -2,10 +2,37 @@ package librerias;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import javax.swing.table.DefaultTableModel;
 
 public class Conversiones
 {
+        public DefaultTableModel convertirTM(HashMap<String, String> tokens) {
+        // Definimos las columnas de la tabla
+        String[] columnas = {"Lexema", "Componente", "Línea", "Posición"};
+
+        // Creamos el modelo vacío
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+
+        // Ordenamos el mapa por las llaves (IDs) usando TreeMap
+        TreeMap<String, String> tokensOrdenados = new TreeMap<>(tokens);
+
+        for (Map.Entry<String, String> entrada : tokensOrdenados.entrySet()) {
+            String datos = entrada.getValue();
+            String[] partes = datos.split(",", -1); // "-1" para que no pierda campos vacíos
+
+            if (partes.length == 4) {
+                modelo.addRow(new Object[]{partes[0], partes[1], partes[2], partes[3]});
+            } else {
+                System.out.println("Error en formato de token (ID " + entrada.getKey() + "): " + datos);
+            }
+        }
+
+        return modelo;
+    }
+    
 	// Conversion de una Matriz -> HashMap <T> -> Cualquier tipo de dato
 	public <T> HashMap<String, HashMap<String, T>> ConvMHM(T[][] mat, T[] enc)
 	{

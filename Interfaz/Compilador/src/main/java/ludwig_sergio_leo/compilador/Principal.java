@@ -2,15 +2,12 @@ package ludwig_sergio_leo.compilador;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
 import librerias.Archivo;
-import librerias.Lex;
+import librerias.Conversiones;
 
 /**
  * @author Ludwig Ivan Ortiz Sierra
@@ -23,6 +20,7 @@ public class Principal extends javax.swing.JFrame {
 
     // Permite llevar el seguimiento de los archivos abiertos en el compilador
     Vector<Archivo> archivos = new Vector<>();
+    Conversiones obc=new Conversiones();
 
     public Principal() {
         initComponents();
@@ -329,39 +327,16 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_GuardarMouseClicked
 
     private void EjecutarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EjecutarMouseClicked
-        if (!archivos.isEmpty()) {
-            Lex obl = new Lex();
-            Archivo arc = archivos.lastElement();
-            HashMap<String, String> obh = obl.Lexico(obl.Pre_Procesado(arc.toArrayLine()));
-            TablaTokens.setModel(convertirTM(obh));
-        } else {
-            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
-        }
+//        if (!archivos.isEmpty()) {
+//            Lex obl = new Lex();
+//            Archivo arc = archivos.lastElement();
+//            HashMap<String, String> obh = obl.Lexico(obl.Pre_Procesado(arc.toArrayLine()));
+//            TablaTokens.setModel(obc.convertirTM(obh));
+//        } else {
+//            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
+//        }
     }//GEN-LAST:event_EjecutarMouseClicked
 
-    private DefaultTableModel convertirTM(HashMap<String, String> tokens) {
-        // Definimos las columnas de la tabla
-        String[] columnas = {"Lexema", "Componente", "Línea", "Posición"};
-
-        // Creamos el modelo vacío
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
-
-        // Ordenamos el mapa por las llaves (IDs) usando TreeMap
-        TreeMap<String, String> tokensOrdenados = new TreeMap<>(tokens);
-
-        for (Map.Entry<String, String> entrada : tokensOrdenados.entrySet()) {
-            String datos = entrada.getValue();
-            String[] partes = datos.split(",", -1); // "-1" para que no pierda campos vacíos
-
-            if (partes.length == 4) {
-                modelo.addRow(new Object[]{partes[0], partes[1], partes[2], partes[3]});
-            } else {
-                System.out.println("Error en formato de token (ID " + entrada.getKey() + "): " + datos);
-            }
-        }
-
-        return modelo;
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Principal::new);
