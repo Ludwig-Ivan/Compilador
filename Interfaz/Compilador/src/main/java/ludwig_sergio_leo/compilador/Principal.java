@@ -1,10 +1,16 @@
 package ludwig_sergio_leo.compilador;
 
+import EditorCodigo.Pestana;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Vector;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import librerias.Archivo;
 import librerias.Conversiones;
@@ -16,16 +22,38 @@ import librerias.Conversiones;
  */
 public class Principal extends javax.swing.JFrame {
 
-    NumeroLinea NumeroDeLineas;
-
     // Permite llevar el seguimiento de los archivos abiertos en el compilador
     Vector<Archivo> archivos = new Vector<>();
+    // Permite llevar el seguimiento de las pestañas abiertas en el compilador
+    Vector<Pestana> pestanas=new Vector<>();
     Conversiones obc=new Conversiones();
 
     public Principal() {
         initComponents();
-        NumeroDeLineas = new NumeroLinea(Editor);
-        ScrollEditor.setRowHeaderView(NumeroDeLineas);
+    }
+    
+    // Agregar un boton cerrar para las pestanas
+    public void agregarBotonCerrar(JTabbedPane tabs, int index) {
+        JPanel pnl = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnl.setOpaque(false);
+
+        JLabel titulo = new JLabel(tabs.getTitleAt(index));
+        JButton cerrar = new JButton(" X");
+        cerrar.setMargin(new Insets(0, 4, 0, 4));
+        cerrar.setBorder(null);
+        cerrar.setFocusable(false);
+
+        // Accion de Cerrar la Pestana (Adecuar)
+        cerrar.addActionListener(e -> {
+            int i = tabs.indexOfTabComponent(pnl);
+            if (i != -1) {
+                tabs.remove(i);
+            }
+        });
+
+        pnl.add(titulo);
+        pnl.add(cerrar);
+        tabs.setTabComponentAt(index, pnl);
     }
 
     @SuppressWarnings("unchecked")
@@ -44,18 +72,17 @@ public class Principal extends javax.swing.JFrame {
         Ejecutar = new javax.swing.JButton();
         Terminar = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        jPanel2 = new javax.swing.JPanel();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        ScrollEditor = new javax.swing.JScrollPane();
-        Editor = new javax.swing.JTextArea();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        Principal = new javax.swing.JPanel();
+        SplitPanel = new javax.swing.JSplitPane();
+        Panel1 = new javax.swing.JPanel();
+        SplitPanel2 = new javax.swing.JSplitPane();
+        Editor = new javax.swing.JTabbedPane();
+        Tablas = new javax.swing.JTabbedPane();
+        Tokens = new javax.swing.JScrollPane();
         TablaTokens = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        Panel_Consola = new javax.swing.JPanel();
+        Simbolos = new javax.swing.JScrollPane();
+        TablaSimbolos = new javax.swing.JTable();
+        Panel2 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea4 = new javax.swing.JTextArea();
         jMenuBar2 = new javax.swing.JMenuBar();
@@ -69,7 +96,6 @@ public class Principal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Compilador");
 
-        jToolBar1.setBackground(new java.awt.Color(204, 204, 204));
         jToolBar1.setBorder(null);
         jToolBar1.setRollover(true);
 
@@ -178,20 +204,13 @@ public class Principal extends javax.swing.JFrame {
         jSeparator4.setSeparatorSize(new java.awt.Dimension(15, 0));
         jToolBar1.add(jSeparator4);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        Principal.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Principal.setLayout(new java.awt.BorderLayout());
 
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        SplitPanel.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jSplitPane1.setDividerLocation(600);
-
-        Editor.setBackground(new java.awt.Color(0, 204, 102));
-        Editor.setColumns(20);
-        Editor.setRows(5);
-        Editor.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Editor", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-        ScrollEditor.setViewportView(Editor);
-
-        jSplitPane1.setLeftComponent(ScrollEditor);
+        SplitPanel2.setDividerLocation(600);
+        SplitPanel2.setLeftComponent(Editor);
 
         TablaTokens.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -204,43 +223,54 @@ public class Principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(TablaTokens);
+        Tokens.setViewportView(TablaTokens);
 
-        jTabbedPane1.addTab("Tokens", jScrollPane1);
+        Tablas.addTab("Tokens", Tokens);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane3.setViewportView(jTextArea3);
+        Simbolos.setName("Simbolos"); // NOI18N
 
-        jTabbedPane1.addTab("No se", jScrollPane3);
+        TablaSimbolos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        Simbolos.setViewportView(TablaSimbolos);
 
-        jSplitPane1.setRightComponent(jTabbedPane1);
+        Tablas.addTab("Simbolos", Simbolos);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+        SplitPanel2.setRightComponent(Tablas);
+
+        javax.swing.GroupLayout Panel1Layout = new javax.swing.GroupLayout(Panel1);
+        Panel1.setLayout(Panel1Layout);
+        Panel1Layout.setHorizontalGroup(
+            Panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(SplitPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+        Panel1Layout.setVerticalGroup(
+            Panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(SplitPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
         );
 
-        jSplitPane2.setLeftComponent(jPanel1);
+        SplitPanel.setLeftComponent(Panel1);
 
-        Panel_Consola.setLayout(new java.awt.BorderLayout());
+        Panel2.setLayout(new java.awt.BorderLayout());
 
         jTextArea4.setColumns(20);
         jTextArea4.setRows(5);
         jTextArea4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Consola", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
         jScrollPane4.setViewportView(jTextArea4);
 
-        Panel_Consola.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+        Panel2.add(jScrollPane4, java.awt.BorderLayout.CENTER);
 
-        jSplitPane2.setRightComponent(Panel_Consola);
+        SplitPanel.setRightComponent(Panel2);
 
-        jPanel2.add(jSplitPane2, java.awt.BorderLayout.CENTER);
+        Principal.add(SplitPanel, java.awt.BorderLayout.CENTER);
 
         jMenu4.setText("Archivos");
 
@@ -268,14 +298,14 @@ public class Principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Principal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(Principal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -292,7 +322,10 @@ public class Principal extends javax.swing.JFrame {
             System.out.println("Ruta seleccionada: " + ruta);
             Archivo arc = new Archivo(ruta);
             archivos.add(arc);
-            Editor.setText(arc.toString());
+            pestanas.add(new Pestana(arc.getRuta().getFileName().toString()));
+            pestanas.lastElement().getArea().setText(arc.toString());
+            Editor.add(pestanas.lastElement());
+            agregarBotonCerrar(Editor,pestanas.size()-1);
         }
     }//GEN-LAST:event_AbrirMouseClicked
     // Accion del Boton de Nuevo Documento
@@ -309,7 +342,7 @@ public class Principal extends javax.swing.JFrame {
             if (nombreArchivo != null && !nombreArchivo.trim().isEmpty()) {
                 Archivo arc = new Archivo(ruta, nombreArchivo, ".lcl");
                 archivos.add(arc);
-                Editor.setText(arc.toString());
+               // Editor.setText(arc.toString());
             } else {
                 JOptionPane.showMessageDialog(null, "Nombre de archivo no válido.");
             }
@@ -317,12 +350,12 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_NuevoMouseClicked
 
     private void GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GuardarMouseClicked
-        if (!(Editor.getText().isBlank()) && !archivos.isEmpty()) {
-            Archivo arc = archivos.lastElement();
-            arc.write(Editor.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
-        }
+//        if (!(Editor.getText().isBlank()) && !archivos.isEmpty()) {
+//            Archivo arc = archivos.lastElement();
+//            arc.write(Editor.getText());
+//        } else {
+//            JOptionPane.showMessageDialog(null, "No hay archivo abierto aun");
+//        }
 
     }//GEN-LAST:event_GuardarMouseClicked
 
@@ -346,15 +379,22 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton Abrir;
     private javax.swing.JButton Debug;
     private javax.swing.JButton Deshacer;
-    private javax.swing.JTextArea Editor;
+    private javax.swing.JTabbedPane Editor;
     private javax.swing.JButton Ejecutar;
     private javax.swing.JButton Guardar;
     private javax.swing.JButton Nuevo;
-    private javax.swing.JPanel Panel_Consola;
+    private javax.swing.JPanel Panel1;
+    private javax.swing.JPanel Panel2;
+    private javax.swing.JPanel Principal;
     private javax.swing.JButton Rehacer;
-    private javax.swing.JScrollPane ScrollEditor;
+    private javax.swing.JScrollPane Simbolos;
+    private javax.swing.JSplitPane SplitPanel;
+    private javax.swing.JSplitPane SplitPanel2;
+    private javax.swing.JTable TablaSimbolos;
     private javax.swing.JTable TablaTokens;
+    private javax.swing.JTabbedPane Tablas;
     private javax.swing.JButton Terminar;
+    private javax.swing.JScrollPane Tokens;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar2;
@@ -362,18 +402,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextArea jTextArea4;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables

@@ -1,4 +1,4 @@
-package librerias;
+package compilador;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,24 +17,22 @@ import java.util.Vector;
  * 
  * @author Ludwig Ivan Ortiz Sierra
  */
-public class Archivo
-{
+public class Archivo {
 	private Path ruta;
-        private String name;
+
 	/**
 	 * Constructor que recibe la ruta del archivo y la almacena para su posterior
 	 * uso.
 	 * 
 	 * @param r : ruta del archivo
 	 */
-	public Archivo(String r)
-	{
+	public Archivo(String r) {
 		ruta = Paths.get(r);
 	}
-        
-        public Path getRuta(){
-            return ruta;
-        }
+
+	public Path getRuta() {
+		return ruta;
+	}
 
 	/**
 	 * Constructor que recibe la ruta, nombre de archivo y extension para la
@@ -44,18 +42,14 @@ public class Archivo
 	 * @param nom : nombre del archivo
 	 * @param ext : extension del archivo
 	 */
-	public Archivo(String r, String nom, String ext)
-	{
+	public Archivo(String r, String nom, String ext) {
 		Path ruta = Paths.get(String.format("%s\\%s%s", r, nom, ext));
 
 		if (!Files.exists(ruta))
-			try
-			{
+			try {
 				Files.createDirectories(ruta.getParent());
 				ruta = Files.createFile(ruta);
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				System.err.println("Error al crear el archivo");
 			}
 		this.ruta = ruta;
@@ -67,19 +61,15 @@ public class Archivo
 	 * 
 	 * @return String (Object) | Null
 	 */
-	public String toString()
-	{
+	public String toString() {
 		String arc = "";
 		List<String> lineas;
 		if (Files.exists(ruta))
-			try
-			{
+			try {
 				lineas = Files.readAllLines(ruta);
 				for (String linea : lineas)
 					arc += linea + "\n";
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				System.err.println("Error al leer el archivo" + e);
 				return null;
 			}
@@ -91,10 +81,8 @@ public class Archivo
 
 	// Convierte el documento en un arreglo String donde cada posicion es un renglon
 	// del documento
-	public Vector<String> toArrayLine()
-	{
-		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()));)
-		{
+	public Vector<String> toArrayLine() {
+		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()));) {
 			String line;
 			Vector<String> file = new Vector<>();
 
@@ -103,9 +91,7 @@ public class Archivo
 
 			return file;
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println("Error al leer el documento" + e);
 		}
 
@@ -119,15 +105,11 @@ public class Archivo
 	 * 
 	 * @param txt : texto a escribir en el documento
 	 */
-	public void write(String txt)
-	{
-		try
-		{
+	public void write(String txt) {
+		try {
 			Files.createDirectories(ruta.getParent());
 			Files.writeString(ruta, txt, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error al escribir en el archivo");
 		}
 	}
@@ -139,15 +121,11 @@ public class Archivo
 	 * 
 	 * @param txt : texto a escribir al final del documento
 	 */
-	public void writeAppend(String txt)
-	{
-		try
-		{
+	public void writeAppend(String txt) {
+		try {
 			Files.createDirectories(ruta.getParent());
 			Files.writeString(ruta, txt, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error al escribir en el archivo");
 		}
 	}
@@ -158,14 +136,10 @@ public class Archivo
 	 * 
 	 * @return boolean
 	 */
-	public boolean delete()
-	{
-		try
-		{
+	public boolean delete() {
+		try {
 			return Files.deleteIfExists(ruta);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error al eliminar el archivo");
 		}
 
@@ -179,17 +153,13 @@ public class Archivo
 	 * 
 	 * @param ruta_destino : ruta a la que se movera el archivo
 	 */
-	public void move(String ruta_destino)
-	{
+	public void move(String ruta_destino) {
 		Path rutades = Paths.get(ruta_destino);
-		try
-		{
+		try {
 			Files.createDirectories(rutades.getParent());
 			Files.move(ruta, rutades, StandardCopyOption.REPLACE_EXISTING);
 			ruta = rutades;
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error al mover el archivo: " + e.getMessage());
 		}
 	}
@@ -202,18 +172,14 @@ public class Archivo
 	 * @param ruta_destino : ruta a la que se copeara el archivo
 	 * @return Archivo (Object) | Null
 	 */
-	public Archivo copy(String ruta_destino)
-	{
+	public Archivo copy(String ruta_destino) {
 		Archivo newArc = null;
 		Path rutades = Paths.get(ruta_destino);
-		try
-		{
+		try {
 			Files.createDirectories(rutades.getParent());
 			Files.copy(ruta, rutades, StandardCopyOption.REPLACE_EXISTING);
 			newArc = new Archivo(rutades.toString());
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error al mover el archivo: " + e.getMessage());
 		}
 		return newArc;
