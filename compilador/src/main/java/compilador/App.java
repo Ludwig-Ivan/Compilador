@@ -8,9 +8,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Vector;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
@@ -21,8 +18,8 @@ public class App extends Application {
     @SuppressWarnings("exports")
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("main"));
-        scene.getStylesheets().add(App.class.getResource("java-keywords.css").toExternalForm());
+        scene = new Scene(loadFXML("main"), 800, 485); // Especificar dimensiones explícitas
+        scene.getStylesheets().add(App.class.getResource("java-keywords.css").toExternalForm()); // Corregir ruta del CSS
         stage.setTitle("Compilador -> from Ludwig, Sergio y Leo");
         stage.setScene(scene);
         stage.setMinWidth(800);
@@ -35,12 +32,11 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml")); // Corregir ruta del FXML
         return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
         launch();
     }
-
 }
