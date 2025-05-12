@@ -23,10 +23,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 
-/**
- *
- * @author Ludwig Ivan Ortiz Sierra
- */
 public class Pestana extends StackPane {
 
     private static final Map<String, String> GROUP_TO_STYLE;
@@ -36,54 +32,58 @@ public class Pestana extends StackPane {
     static {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("KEYWORD", "keyword");
+        map.put("IDENTIFIER", "identifier");
+        map.put("NUMBER", "number");
+        map.put("OPERATOR", "operator");
         map.put("PAREN", "paren");
         map.put("BRACE", "brace");
         map.put("BRACKET", "bracket");
         map.put("SEMICOLON", "semicolon");
         map.put("STRING", "string");
+        map.put("CHAR", "char");
         map.put("COMMENT", "comment");
+        map.put("ERROR", "error");
         GROUP_TO_STYLE = Collections.unmodifiableMap(map);
     }
 
-    // ? Palabras Reservadas
     private static final String[] KEYWORDS = new String[] {
-            "abstract", "assert", "bool", "break", "byte",
-            "case", "catch", "char", "class", "const",
-            "continue", "default", "do", "double", "else",
-            "enum", "extends", "final", "finally", "float",
-            "for", "goto", "if", "implements", "import",
-            "instanceof", "int", "interface", "long", "native",
-            "new", "package", "private", "protected", "public",
-            "return", "short", "static", "strictfp", "super",
-            "switch", "synchronized", "this", "throw", "throws",
-            "transient", "try", "void", "volatile", "while", "cadena"
+        "if", "else", "while", "do", "return", "print", "int", "float", "char",
+        "cadena", "bool", "void", "true", "false", "break", "continue", "func"
     };
 
-    // ? Patrones de componentes
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+    private static final String IDENTIFIER_PATTERN = "[a-zA-Z_][a-zA-Z0-9_]*";
+    private static final String NUMBER_PATTERN = "\\d+\\.?\\d*";
+    private static final String OPERATOR_PATTERN = "\\+\\+|\\-\\-|\\+|-|\\*|/|%|==|!=|<=|>=|<|>|&&|\\|\\||!|=|\\?|:";
     private static final String PAREN_PATTERN = "\\(|\\)";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String SEMICOLON_PATTERN = "\\;";
+    private static final String SEMICOLON_PATTERN = ";";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
-    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/" // for whole text
-    // processing (text blocks)
-            + "|" + "/\\*[^\\v]*" + "|" + "^\\h*\\*([^\\v]*|/)"; // for visible paragraph processing (line
-                                                                 // by line)
-    // ? Patron Gigante
+    private static final String CHAR_PATTERN = "'([^'\\\\]|\\\\.)'";
+    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/";
+    private static final String ERROR_PATTERN = "[^\\s\\w\"';,(){}\\[\\]+\\-*/%=<>!&|?:]";
+
     private static final Pattern PATTERN = Pattern.compile(
             "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+                    + "|(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")"
+                    + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
+                    + "|(?<OPERATOR>" + OPERATOR_PATTERN + ")"
                     + "|(?<PAREN>" + PAREN_PATTERN + ")"
                     + "|(?<BRACE>" + BRACE_PATTERN + ")"
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
                     + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
                     + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
+                    + "|(?<CHAR>" + CHAR_PATTERN + ")"
+                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+                    + "|(?<ERROR>" + ERROR_PATTERN + ")");
 
     public Pestana(String n) {
+        System.out.println("Inicializando Pestana para: " + n);
         this.ruta = n;
 
         codeArea = new CodeArea();
+        codeArea.setEditable(true);
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         codeArea.setContextMenu(new DefaultContextMenu());
         codeArea.getVisibleParagraphs().addModificationObserver(
@@ -92,18 +92,23 @@ public class Pestana extends StackPane {
         final Pattern whiteSpace = Pattern.compile("^\\s+");
         codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
             if (KE.getCode() == KeyCode.ENTER) {
-                int caretPosition = codeArea.getCaretPosition(); // ? Posicion del puntero
-                int currentParagraph = codeArea.getCurrentParagraph(); // ? Posicion de Linea
-                Matcher m0 = whiteSpace.matcher( // ? Identifica si hay solamente espacios en la linea-1
+                int caretPosition = codeArea.getCaretPosition();
+                int currentParagraph = codeArea.getCurrentParagraph();
+                Matcher m0 = whiteSpace.matcher(
                         codeArea.getParagraph(currentParagraph - 1).getSegments().get(0));
-                if (m0.find()) // ? Encuentra cada espacion y lo inserta en la linea actual
+                if (m0.find()) {
                     Platform.runLater(() -> codeArea.insertText(caretPosition, m0.group()));
+                }
             }
+        });
+
+        codeArea.textProperty().addListener((obs, oldText, newText) -> {
+            System.out.println("Texto cambiado en Pestana: " + newText);
         });
 
         setId(ruta);
         getChildren().add(new VirtualizedScrollPane<>(codeArea));
-
+        System.out.println("Pestana inicializada exitosamente");
     }
 
     private StyleSpans<Collection<String>> computeHighlighting(String text) {
@@ -113,7 +118,6 @@ public class Pestana extends StackPane {
 
         while (matcher.find()) {
             String styleClass = null;
-            // Recorre los grupos definidos en el patrón
             for (Map.Entry<String, String> entry : GROUP_TO_STYLE.entrySet()) {
                 if (matcher.group(entry.getKey()) != null) {
                     styleClass = entry.getValue();
@@ -121,7 +125,9 @@ public class Pestana extends StackPane {
                 }
             }
 
-            /* never happens */ assert styleClass != null;
+            if (styleClass == null) {
+                styleClass = "error"; // Por si acaso
+            }
             spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
             lastKwEnd = matcher.end();
@@ -144,7 +150,7 @@ public class Pestana extends StackPane {
 
         @Override
         public void accept(ListModification<? extends Paragraph<PS, SEG, S>> lm) {
-            if (lm.getAddedSize() > 0)
+            if (lm.getAddedSize() > 0) {
                 Platform.runLater(() -> {
                     int paragraph = Math.min(area.firstVisibleParToAllParIndex() + lm.getFrom(),
                             area.getParagraphs().size() - 1);
@@ -160,6 +166,7 @@ public class Pestana extends StackPane {
                         prevParagraph = paragraph;
                     }
                 });
+            }
         }
     }
 
@@ -188,17 +195,10 @@ public class Pestana extends StackPane {
             getItems().addAll(fold, unfold, print);
         }
 
-        /**
-         * Folds multiple lines of selected text, only showing the first line and hiding
-         * the rest.
-         */
         private void fold() {
             ((CodeArea) getOwnerNode()).foldSelectedParagraphs();
         }
 
-        /**
-         * Unfold the CURRENT line/paragraph if it has a fold.
-         */
         private void unfold() {
             CodeArea area = (CodeArea) getOwnerNode();
             area.unfoldParagraphs(area.getCurrentParagraph());
@@ -214,10 +214,13 @@ public class Pestana extends StackPane {
     }
 
     public String getText() {
-        return codeArea.getText();
+        String text = codeArea.getText();
+        System.out.println("Obteniendo texto de Pestana: " + text);
+        return text;
     }
 
     public void setText(String txt) {
+        System.out.println("Estableciendo texto en Pestana: " + txt);
         codeArea.replaceText(txt);
         Platform.runLater(() -> {
             StyleSpans<Collection<String>> styles = computeHighlighting(txt);
