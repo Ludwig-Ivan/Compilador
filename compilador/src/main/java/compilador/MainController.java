@@ -29,62 +29,6 @@ public class MainController {
 
     private AnalizadorLexico analizador = new AnalizadorLexico();
 
-    // @FXML
-    // private void initialize() {
-    // System.out.println("Inicializando MainController");
-    // // Verificar inyección de TabEditor y outputText
-    // if (TabEditor == null) {
-    // System.out.println("Error: TabEditor no está inyectado");
-    // }
-    // if (outputText == null) {
-    // System.out.println("Error: outputText no está inyectado");
-    // }
-    // // Verificar inyección de botones del ToolBar
-    // if (ToolBarBtnNuevo == null) {
-    // System.out.println("Error: ToolBarBtnNuevo no está inyectado");
-    // } else {
-    // System.out.println("ToolBarBtnNuevo inyectado, disable: " +
-    // ToolBarBtnNuevo.isDisable());
-    // }
-    // if (ToolBarBtnAbrir == null) {
-    // System.out.println("Error: ToolBarBtnAbrir no está inyectado");
-    // } else {
-    // System.out.println("ToolBarBtnAbrir inyectado, disable: " +
-    // ToolBarBtnAbrir.isDisable());
-    // }
-    // if (ToolBarBtnGuardar == null) {
-    // System.out.println("Error: ToolBarBtnGuardar no está inyectado");
-    // } else {
-    // System.out.println("ToolBarBtnGuardar inyectado, disable: " +
-    // ToolBarBtnGuardar.isDisable());
-    // }
-    // if (ToolBarBtnAnalizar == null) {
-    // System.out.println("Error: ToolBarBtnAnalizar no está inyectado");
-    // } else {
-    // System.out.println("ToolBarBtnAnalizar inyectado, disable: " +
-    // ToolBarBtnAnalizar.isDisable());
-    // }
-    // // Verificar inyección de MenuItems
-    // if (MenuItemNuevo == null) {
-    // System.out.println("Error: MenuItemNuevo no está inyectado");
-    // } else {
-    // System.out.println("MenuItemNuevo inyectado, disable: " +
-    // MenuItemNuevo.isDisable());
-    // }
-    // if (MenuItemAbrir == null) {
-    // System.out.println("Error: MenuItemAbrir no está inyectado");
-    // } else {
-    // System.out.println("MenuItemAbrir inyectado, disable: " +
-    // MenuItemAbrir.isDisable());
-    // }
-    // if (MenuItemGuardar == null) {
-    // System.out.println("Error: MenuItemGuardar no está inyectado");
-    // } else {
-    // System.out.println("MenuItemGuardar inyectado, disable: " +
-    // MenuItemGuardar.isDisable());
-    // }
-    // }
-
     @FXML
     private void AccionToolBarBtnNuevo() {
         System.out.println("Botón Nuevo clicado (desde ToolBar o Menu)");
