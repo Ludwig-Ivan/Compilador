@@ -82,7 +82,7 @@ public class Archivo {
 	// Convierte el documento en un arreglo String donde cada posicion es un renglon
 	// del documento
 	public Vector<String> toArrayLine() {
-		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()));) {
+		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()))) {
 			String line;
 			Vector<String> file = new Vector<>();
 

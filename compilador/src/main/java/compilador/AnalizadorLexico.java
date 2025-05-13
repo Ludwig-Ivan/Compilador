@@ -5,12 +5,14 @@ import java.util.List;
 
 public class AnalizadorLexico {
 
+    // ? Clase Token para resguardar la informacion de cada token generado
     public static class Token {
         public String tipo;
         public String lexema;
         public int linea;
         public int columna;
 
+        // ? Constructor que obtiene el tipo/lexema/linea/columna
         public Token(String tipo, String lexema, int linea, int columna) {
             this.tipo = tipo;
             this.lexema = lexema;
@@ -25,49 +27,87 @@ public class AnalizadorLexico {
     }
 
     private static final String[] PALABRAS_RESERVADAS = {
-        "if", "else", "while", "do", "return", "print", "int", "float", "char", "cadena",
-        "bool", "void", "true", "false", "break", "continue", "func"
+            "if", "else", "while", "do", "return", "print", "int", "float", "char", "cadena",
+            "bool", "void", "true", "false", "break", "continue", "func"
     };
 
     private static final String[] OPERADORES = {
-        "+", "-", "*", "/", "%", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!",
-        "++", "--", "?", ":"
+            "+", "-", "*", "/", "%", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!",
+            "++", "--", "?", ":"
     };
 
+    /**
+     * Arreglo de los simbolos reconocibles
+     * 
+     * @param c -> caracter
+     * @return boolean
+     */
     private static final String[] SIMBOLOS = {
-        ";", ",", "(", ")", "{", "}", "[", "]"
+            ";", ",", "(", ")", "{", "}", "[", "]"
     };
 
+    /**
+     * Determina si al caracter recibido es una letra
+     * 
+     * @param c -> caracter
+     * @return boolean
+     */
     private static boolean esLetra(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     }
 
+    /**
+     * Determina si el caracter recibido es un digito
+     * 
+     * @param c -> caracter
+     * @return boolean
+     */
     private static boolean esDigito(char c) {
         return c >= '0' && c <= '9';
     }
 
+    /**
+     * Determina si al caracter recibido es algun caracter vacio \
+     * 
+     * @param c -> caracter
+     * @return boolean
+     */
     private static boolean esEspacio(char c) {
         return c == ' ' || c == '\n' || c == '\t' || c == '\r';
     }
 
+    /**
+     * Determina si la palabra es una palabra reservada
+     * 
+     * @param palabra -> String palabra
+     * @return boolean
+     */
     private static boolean esPalabraReservada(String palabra) {
-        for (String pr : PALABRAS_RESERVADAS) {
-            if (pr.equalsIgnoreCase(palabra)) {
+        for (String pr : PALABRAS_RESERVADAS)
+            if (pr.equalsIgnoreCase(palabra))
                 return true;
-            }
-        }
         return false;
     }
 
+    /**
+     * Determina si la palabra recibida es un operador
+     * 
+     * @param s -> String operador
+     * @return boolean
+     */
     private static boolean esOperador(String s) {
-        for (String op : OPERADORES) {
-            if (op.equals(s)) {
+        for (String op : OPERADORES)
+            if (op.equals(s))
                 return true;
-            }
-        }
         return false;
     }
 
+    /**
+     * Determina si la palabra recibida es un simbolo
+     * 
+     * @param s -> String simbolo
+     * @return boolean
+     */
     private static boolean esSimbolo(String s) {
         for (String sim : SIMBOLOS) {
             if (sim.equals(s)) {
@@ -135,7 +175,8 @@ public class AnalizadorLexico {
                             buffer.append(entrada.charAt(i));
                             i++;
                             columna++;
-                            tokens.add(new Token("ERROR", "Número mal formado: '" + buffer.toString() + "'", linea, startColumna));
+                            tokens.add(new Token("ERROR", "Número mal formado: '" + buffer.toString() + "'", linea,
+                                    startColumna));
                             continue;
                         }
                         tienePunto = true;
@@ -169,7 +210,8 @@ public class AnalizadorLexico {
                     columna++;
                 }
                 if (i >= entrada.length() || entrada.charAt(i) == '\n') {
-                    tokens.add(new Token("ERROR", "Cadena sin cerrar: '" + buffer.toString() + "'", linea, startColumna));
+                    tokens.add(
+                            new Token("ERROR", "Cadena sin cerrar: '" + buffer.toString() + "'", linea, startColumna));
                     if (i < entrada.length() && entrada.charAt(i) == '\n') {
                         linea++;
                         columna = 1;
@@ -195,7 +237,8 @@ public class AnalizadorLexico {
                     columna++;
                 }
                 if (i >= entrada.length() || entrada.charAt(i) == '\n') {
-                    tokens.add(new Token("ERROR", "Caracter sin cerrar: '" + buffer.toString() + "'", linea, startColumna));
+                    tokens.add(new Token("ERROR", "Caracter sin cerrar: '" + buffer.toString() + "'", linea,
+                            startColumna));
                     if (i < entrada.length() && entrada.charAt(i) == '\n') {
                         linea++;
                         columna = 1;
@@ -244,7 +287,8 @@ public class AnalizadorLexico {
                         i++;
                     }
                     if (i + 1 >= entrada.length()) {
-                        tokens.add(new Token("ERROR", "Comentario multilínea sin cerrar: '/*" + buffer.toString() + "'", linea, startColumna));
+                        tokens.add(new Token("ERROR", "Comentario multilínea sin cerrar: '/*" + buffer.toString() + "'",
+                                linea, startColumna));
                         continue;
                     }
                     i += 2;
