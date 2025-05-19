@@ -14,6 +14,7 @@ public class App extends Application {
     public static Vector<Archivo> archivos = new Vector<>(); // ? Vector para el manejo de archivos
     public static Vector<Pestana> pestanas = new Vector<>(); // ? Vector para el manejo de pestanas
     // TODO: agregar mas configuraciones iniciales
+    //Hola como estas
     public static int fontSizeGlobal = 12; // ? Configuracion inicial de fuente establecida en la App
 
     /**
