@@ -42,13 +42,13 @@ public class Pestana extends StackPane {
         map.put("STRING", "string");
         map.put("CHAR", "char");
         map.put("COMMENT", "comment");
-        map.put("ERROR", "error");
+        // map.put("ERROR", "error");
         GROUP_TO_STYLE = Collections.unmodifiableMap(map);
     }
 
     private static final String[] KEYWORDS = new String[] {
-        "if", "else", "while", "do", "return", "print", "int", "float", "char",
-        "cadena", "bool", "void", "true", "false", "break", "continue", "func"
+            "if", "else", "while", "do", "return", "print", "int", "float", "char",
+            "cadena", "bool", "void", "true", "false", "break", "continue", "func", "main"
     };
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
@@ -58,11 +58,14 @@ public class Pestana extends StackPane {
     private static final String PAREN_PATTERN = "\\(|\\)";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String SEMICOLON_PATTERN = ";";
+    private static final String SEMICOLON_PATTERN = "\\;";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String CHAR_PATTERN = "'([^'\\\\]|\\\\.)'";
-    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/";
-    private static final String ERROR_PATTERN = "[^\\s\\w\"';,(){}\\[\\]+\\-*/%=<>!&|?:]";
+    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/"
+            + "|" + "/\\*[^\\v]*" + "|" + "^\\h*\\*([^\\v]*|/)";
+    // TODO : Revisar este patron Error
+    // private static final String ERROR_PATTERN =
+    // "[^\\s\\w\"';,(){}\\[\\]+\\-*/%=<>!&|?:]";
 
     private static final Pattern PATTERN = Pattern.compile(
             "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
@@ -75,17 +78,16 @@ public class Pestana extends StackPane {
                     + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
                     + "|(?<STRING>" + STRING_PATTERN + ")"
                     + "|(?<CHAR>" + CHAR_PATTERN + ")"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
-                    + "|(?<ERROR>" + ERROR_PATTERN + ")");
+                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
+    // + "|(?<ERROR>" + ERROR_PATTERN + ")");
 
     public Pestana(String n) {
-        System.out.println("Inicializando Pestana para: " + n);
         this.ruta = n;
-
         codeArea = new CodeArea();
         codeArea.setEditable(true);
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         codeArea.setContextMenu(new DefaultContextMenu());
+
         codeArea.getVisibleParagraphs().addModificationObserver(
                 new VisibleParagraphStyler<>(codeArea, this::computeHighlighting));
 
@@ -102,13 +104,8 @@ public class Pestana extends StackPane {
             }
         });
 
-        codeArea.textProperty().addListener((obs, oldText, newText) -> {
-            System.out.println("Texto cambiado en Pestana: " + newText);
-        });
-
         setId(ruta);
         getChildren().add(new VirtualizedScrollPane<>(codeArea));
-        System.out.println("Pestana inicializada exitosamente");
     }
 
     private StyleSpans<Collection<String>> computeHighlighting(String text) {
@@ -125,9 +122,9 @@ public class Pestana extends StackPane {
                 }
             }
 
-            if (styleClass == null) {
+            if (styleClass == null)
                 styleClass = "error"; // Por si acaso
-            }
+
             spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
             lastKwEnd = matcher.end();
@@ -215,12 +212,10 @@ public class Pestana extends StackPane {
 
     public String getText() {
         String text = codeArea.getText();
-        System.out.println("Obteniendo texto de Pestana: " + text);
         return text;
     }
 
     public void setText(String txt) {
-        System.out.println("Estableciendo texto en Pestana: " + txt);
         codeArea.replaceText(txt);
         Platform.runLater(() -> {
             StyleSpans<Collection<String>> styles = computeHighlighting(txt);

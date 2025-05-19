@@ -79,10 +79,15 @@ public class Archivo {
 		return arc;
 	}
 
-	// Convierte el documento en un arreglo String donde cada posicion es un renglon
-	// del documento
+	/**
+	 * Se encarga de convertir un archivo con texto a un vector con cada linea del
+	 * documento
+	 * 
+	 * @return -> Devuelve un vector con cada una de las lineas del documento leido
+	 *         o devuelve null en caso de no procesar ninguna linea
+	 */
 	public Vector<String> toArrayLine() {
-		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()));) {
+		try (BufferedReader obb = new BufferedReader(new FileReader(ruta.toString()))) {
 			String line;
 			Vector<String> file = new Vector<>();
 
@@ -164,7 +169,6 @@ public class Archivo {
 		}
 	}
 
-	// Copia el archivo
 	/**
 	 * Metodo que copea el archivo actual a un numero destino. En caso de error
 	 * devuelve null. Si no existen los directorios los crea de manera automatica.

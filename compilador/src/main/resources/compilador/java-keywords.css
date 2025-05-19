@@ -30,6 +30,22 @@
     -fx-fill: cadetblue;
 }
 
+.char {
+    -fx-fill: blue;
+}
+
+.operator {
+    -fx-fill: rgb(112, 32, 225);
+}
+
+.number {
+    -fx-fill: rgb(221, 158, 0);
+}
+
+.identifier {
+    -fx-font-weight: bold;
+}
+
 .paragraph-box:has-caret {
     -fx-background-color: #f2f9fc;
 }

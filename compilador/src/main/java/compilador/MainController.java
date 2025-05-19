@@ -1,15 +1,19 @@
 package compilador;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
@@ -19,6 +23,9 @@ import javafx.stage.Stage;
 
 public class MainController {
 
+    private int id = 1;
+    private ObservableList<Componente> datos;
+
     @FXML
     private TabPane TabEditor;
     @FXML
@@ -26,71 +33,50 @@ public class MainController {
     @FXML
     private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar;
     @FXML
-    private TextArea outputText;
-
-    private AnalizadorLexico analizador = new AnalizadorLexico();
-
+    private TextArea TxtSinRes, TxtConsola;
     @FXML
-    private void initialize() {
-        System.out.println("Inicializando MainController");
-        // Verificar inyección de TabEditor y outputText
-        if (TabEditor == null) {
-            System.out.println("Error: TabEditor no está inyectado");
-        }
-        if (outputText == null) {
-            System.out.println("Error: outputText no está inyectado");
-        }
-        // Verificar inyección de botones del ToolBar
-        if (ToolBarBtnNuevo == null) {
-            System.out.println("Error: ToolBarBtnNuevo no está inyectado");
-        } else {
-            System.out.println("ToolBarBtnNuevo inyectado, disable: " + ToolBarBtnNuevo.isDisable());
-        }
-        if (ToolBarBtnAbrir == null) {
-            System.out.println("Error: ToolBarBtnAbrir no está inyectado");
-        } else {
-            System.out.println("ToolBarBtnAbrir inyectado, disable: " + ToolBarBtnAbrir.isDisable());
-        }
-        if (ToolBarBtnGuardar == null) {
-            System.out.println("Error: ToolBarBtnGuardar no está inyectado");
-        } else {
-            System.out.println("ToolBarBtnGuardar inyectado, disable: " + ToolBarBtnGuardar.isDisable());
-        }
-        if (ToolBarBtnAnalizar == null) {
-            System.out.println("Error: ToolBarBtnAnalizar no está inyectado");
-        } else {
-            System.out.println("ToolBarBtnAnalizar inyectado, disable: " + ToolBarBtnAnalizar.isDisable());
-        }
-        // Verificar inyección de MenuItems
-        if (MenuItemNuevo == null) {
-            System.out.println("Error: MenuItemNuevo no está inyectado");
-        } else {
-            System.out.println("MenuItemNuevo inyectado, disable: " + MenuItemNuevo.isDisable());
-        }
-        if (MenuItemAbrir == null) {
-            System.out.println("Error: MenuItemAbrir no está inyectado");
-        } else {
-            System.out.println("MenuItemAbrir inyectado, disable: " + MenuItemAbrir.isDisable());
-        }
-        if (MenuItemGuardar == null) {
-            System.out.println("Error: MenuItemGuardar no está inyectado");
-        } else {
-            System.out.println("MenuItemGuardar inyectado, disable: " + MenuItemGuardar.isDisable());
-        }
-    }
+    TableView<Componente> TblTokens;
 
+    /**
+     * Metodo encargado de generar una nueva pestana y un nuevo archivo de codigo
+     * 
+     * @implSpec
+     *           Obtiene el stage donde se mostraran las ventanas emergentes.
+     * @implSpec
+     *           Obtiene la ruta donde se guardara el nuevo archivo.
+     * @implSpec
+     *           Obtiene el nombre que se le asignara al archivo en el formato
+     *           deseado.
+     * @implSpec
+     *           Crea el archivo, lo agrega al contenedor de pestanas.
+     * @implSpec
+     *           Y lo agrega a la lista de los archivos abiertos actualmente.
+     */
     @FXML
     private void AccionToolBarBtnNuevo() {
-        System.out.println("Botón Nuevo clicado (desde ToolBar o Menu)");
         try {
-            Stage stage = (Stage) TabEditor.getScene().getWindow();
+            String nombre, ruta;
+            Archivo arc;
+            Stage stage = (Stage) TabEditor.getScene().getWindow(); // ? obtiene la ventana principal
+
             if (stage == null) {
-                System.out.println("Error: No se pudo obtener el Stage");
                 mostrarAlerta("Error", "No se pudo obtener la ventana principal.");
                 return;
             }
-            System.out.println("Stage obtenido: " + stage.getTitle());
-            seleccionarDir(stage);
+
+            ruta = seleccionarDir(stage);
+            System.out.println("Directorio seleccionado: " + ruta);
+            nombre = mostrarInputDialog("Escribe nombre de archivo", null, "Escribe el nombre del archivo");
+
+            if (nombre != null) {
+                if (!nombre.endsWith(".lcl"))
+                    nombre += ".lcl";
+                arc = new Archivo(ruta, nombre, "");
+                App.archivos.add(arc);
+                agregarPestana(arc);
+            } else
+                mostrarAlerta("Error", "Nombre de archivo no proporcionado");
+
         } catch (Exception e) {
             System.out.println("Error en AccionToolBarBtnNuevo: " + e.getMessage());
             e.printStackTrace();
@@ -98,18 +84,41 @@ public class MainController {
         }
     }
 
+    /**
+     * Metodo de accion para boton abrir de la tool-bar.
+     * Se encarga de abrir un nuevo archivo de codigo, y mostrarlo en el editor de
+     * codigo.
+     * 
+     * @implSpec
+     *           Obtiene el archivo que se mando a seleccionar.
+     * @implSpec
+     *           Verifica que no exista otro archivo abierto
+     * @implSpec
+     *           Agrega el archivo en la lista de archivos activos.
+     * @implSpec
+     *           DEspues agrega la pestana al editor de codigo
+     */
     @FXML
     private void AccionToolBarBtnAbrir() {
-        System.out.println("Botón Abrir clicado (desde ToolBar o Menu)");
         try {
             Stage stage = (Stage) TabEditor.getScene().getWindow();
-            if (stage == null) {
-                System.out.println("Error: No se pudo obtener el Stage");
-                mostrarAlerta("Error", "No se pudo obtener la ventana principal.");
-                return;
+            String ruta;
+            Archivo arc;
+            if (stage != null) {
+                ruta = seleccionarArc(stage, "*.lcl");
+                if (ruta != null) {
+                    for (Archivo a : App.archivos)
+                        if (a.getRuta().toString().equals(ruta)) {
+                            mostrarAlerta("Advertencia", "El archivo ya está abierto en otra pestaña.");
+                            return;
+                        }
+
+                    arc = new Archivo(ruta);
+                    App.archivos.add(arc);
+                    agregarPestana(arc);
+                    System.out.println("Pestaña abierta para: " + arc.getRuta());
+                }
             }
-            System.out.println("Stage obtenido: " + stage.getTitle());
-            seleccionarArc(stage);
         } catch (Exception e) {
             System.out.println("Error en AccionToolBarBtnAbrir: " + e.getMessage());
             e.printStackTrace();
@@ -117,141 +126,180 @@ public class MainController {
         }
     }
 
+    /**
+     * Metodo de accion del boton de tool-bar para guardar la ventana de codigo
+     * actual.
+     * 
+     * @implSpec
+     *           Obtiene el tab seleccionado y determina que no sea null y su
+     *           contenido sea de pestana.
+     * @implSpec
+     *           Obtiene el contenido de la pestana actual, la ruta de ese pestana.
+     * @implSpec
+     *           Busca el archivo correspondiente en la lista de archivos abiertos.
+     * @implSpec
+     *           Al encontrarlo sobre-escribe el contenido anterior con el contenido
+     *           actual de la pestana.
+     * @implSpec
+     *           En caso de no tener una pestana seleccionada, mandara una alerta.
+     */
     @FXML
     private void AccionToolBarBtnGuardar() {
-        System.out.println("Botón Guardar clicado (desde ToolBar o Menu)");
         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
         if (tab != null && tab.getContent() instanceof Pestana) {
             Pestana pest_act = (Pestana) tab.getContent();
-            String content = pest_act.getText();
-            String ruta = pest_act.getRuta();
+            String content = pest_act.getText(); // ? contenido de la pestana actual
+            String ruta = pest_act.getRuta(); // ? ruta de la pestana actual
             System.out.println("Guardando contenido en: " + ruta);
             App.archivos.forEach(arc -> {
+                // ? Si las rutas concuerda, sobre-escribe el contenido
                 if (arc.getRuta().toString().equals(ruta)) {
                     arc.write(content);
                     System.out.println("Contenido guardado exitosamente");
-                }
+                } // TODO : si las rutas no concuerda, mandar una alerta.
             });
-        } else {
-            System.out.println("No hay pestaña seleccionada para guardar");
+        } else
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada para guardar.");
-        }
+
     }
 
+    /**
+     * Metodo de accion para el boton de la tool-bar encargado de inicializar el
+     * analisis lexico-sintactico.
+     * 
+     * @implSpec
+     *           El metodo obtiene la ventana de codigo seleccionada en el momento.
+     * @implSpec
+     *           Obtiene el contenido de la ventana de codigo y esa es la entrada
+     *           que el lexico usara para analizar.
+     * @implSpec
+     *           Enseguida se analiza token por token encontrados en la entrada y se
+     *           indica si es posible seguir o se tiene que detener el analisis por
+     *           alguna situacion critica (producciones no determinadas, o terminos
+     *           de tokens inesperados).
+     * @implSpec
+     *           Si se encuentran errores tanto lexicos como sintacticos, son
+     *           reportados, y se determina que el analisis fue incorrecto
+     * @implSpec
+     *           En caso contrario se reporta que el analisis se realizo con exito
+     * @implSpec
+     *           Si no encuentra alguna pestana seleccionada se lanzara una alerta
+     */
     @FXML
     private void AccionToolBarBtnAnalizar() {
-        System.out.println("Botón Analizar clicado");
         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
+
+        // ? Determina si el contenido obtenido del tab seleccionado es una pestana
         if (tab != null && tab.getContent() instanceof Pestana) {
             Pestana pestana = (Pestana) tab.getContent();
             String entrada = pestana.getText();
-            System.out.println("Texto en pestaña: " + entrada);
-            List<AnalizadorLexico.Token> tokens = analizador.analizar(entrada);
-            StringBuilder resultado = new StringBuilder();
-            boolean hasErrors = false;
-            for (AnalizadorLexico.Token token : tokens) {
-                resultado.append(token.toString()).append("\n");
-                if (token.tipo.equals("ERROR")) {
-                    hasErrors = true;
-                }
+
+            Lexico lex = new Lexico();
+            Sintactico sin = new Sintactico("P");
+            boolean ban = true;
+            Token token;
+
+            sin.importarExcel("src/main/resources/compilador/Simbolos_MegaVerdaderos.txt");
+            LimpiarTabla();
+            lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
+            AgregarColumnas();
+
+            // ? Control de seguimiento para analisis de tokens
+            while (ban) {
+                token = lex.SiguienteToken();
+                if (token == null)
+                    break;
+                // TODO : El sintactico aun no se encuentra listo
+                // ban = sin.AnalizarToken(token);
+                AgregarReg(token);
             }
-            System.out.println("Tokens generados:\n" + resultado.toString());
-            outputText.setText(resultado.toString());
-            if (hasErrors) {
-                mostrarAlerta("Errores léxicos", "Se encontraron errores léxicos. Revisa la pestaña Tokens para más detalles.");
-            }
+
+            TxtConsola.clear();
+            lex.errores.forEach(e -> TxtConsola.appendText(
+                    "- " + String.format("Error en la linea %d, columna %d : %s -> %s", e.linea, e.columna, e.tipo,
+                            e.lexema) + "\n"));
+
+            TxtSinRes.clear();
+            TxtSinRes.appendText("Pila:\n");
+            sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
+
+            // ? Si existe algun error, el analisis fue incorrecto, en caso contrario,
+            // ? analisis correcto
+            if (!sin.errores.isEmpty()) {
+                TxtSinRes.appendText("Analisis Sintactico Erroneo");
+                sin.errores.forEach(e -> TxtConsola.appendText("- " + e + "\n"));
+            } else
+                TxtSinRes.appendText("Analisis sintáctico completado correctamente");
+
         } else {
-            System.out.println("No hay pestaña seleccionada");
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada.");
         }
     }
 
-    private void seleccionarDir(Stage stage) {
-        System.out.println("Seleccionando directorio para nuevo archivo");
+    /**
+     * Metodo encargado de la seleccion de directorio.
+     * Hace uso del obtjeto DirectoryChooser para abrir una ventana de dialogo en la
+     * posicion de stage mandado.
+     * 
+     * @param stage -> Ventana en la que aparecera el selector de directorios.
+     * @return Devuelve el AbsolutePath del directorio seleccionado, en caso
+     *         contrario null
+     */
+    private String seleccionarDir(Stage stage) {
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("Selecciona una carpeta");
         File dir = dirChooser.showDialog(stage);
-        if (dir == null) {
-            System.out.println("No se seleccionó ninguna carpeta");
-            return;
-        }
-        String ruta = dir.getAbsolutePath();
-        System.out.println("Directorio seleccionado: " + ruta);
-
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Entrada requerida");
-        dialog.setHeaderText(null);
-        dialog.setContentText("Escriba el nombre del archivo (sin extensión)");
-
-        Optional<String> resultado = dialog.showAndWait();
-        if (!resultado.isPresent() || resultado.get().trim().isEmpty()) {
-            System.out.println("No se proporcionó un nombre de archivo");
-            mostrarAlerta("Error", "Debe proporcionar un nombre de archivo válido.");
-            return;
-        }
-
-        String nombre = resultado.get().trim();
-        if (!nombre.endsWith(".lcl")) {
-            nombre += ".lcl";
-        }
-
-        try {
-            Archivo arc = new Archivo(ruta, nombre, "");
-            App.archivos.add(arc);
-            agregarPestana(arc);
-            System.out.println("Pestaña creada para: " + arc.getRuta());
-        } catch (Exception e) {
-            System.out.println("Error al crear archivo: " + e.getMessage());
-            e.printStackTrace();
-            mostrarAlerta("Error", "No se pudo crear el archivo: " + e.getMessage());
-        }
+        return dir != null ? dir.getAbsolutePath() : null;
     }
 
-    private void seleccionarArc(Stage stage) {
-        System.out.println("Seleccionando archivo para abrir");
+    /**
+     * Metodo encargado de la seleccion de archivos con cierto tipo de extension.
+     * 
+     * @param stage -> Ventana en la q se mostrara el selector de archivos.
+     * @param ext   -> Extension de archivos que buscara el selector.
+     * @return La ruta del archivo seleccionado | null en caso de no encontrarlo
+     */
+    private String seleccionarArc(Stage stage, String ext) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccione un archivo");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de texto", "*.lcl"));
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Archivos de texto", ext != null ? ext : "*.txt"));
         File res = fileChooser.showOpenDialog(stage);
-
-        if (res != null) {
-            String ruta = res.getAbsolutePath();
-            System.out.println("Ruta seleccionada: " + ruta);
-            for (Archivo arc : App.archivos) {
-                if (arc.getRuta().toString().equals(ruta)) {
-                    System.out.println("El archivo ya está abierto");
-                    mostrarAlerta("Advertencia", "El archivo ya está abierto en otra pestaña.");
-                    return;
-                }
-            }
-            try {
-                Archivo arc = new Archivo(ruta);
-                App.archivos.add(arc);
-                agregarPestana(arc);
-                System.out.println("Pestaña abierta para: " + arc.getRuta());
-            } catch (Exception e) {
-                System.out.println("Error al abrir archivo: " + e.getMessage());
-                e.printStackTrace();
-                mostrarAlerta("Error", "No se pudo abrir el archivo: " + e.getMessage());
-            }
-        } else {
-            System.out.println("No se seleccionó ningún archivo");
-        }
+        return res != null ? res.getAbsolutePath().trim() : null;
     }
 
+    /**
+     * Metodo encargado de agregar al nueva pestana en referencia al archivo
+     * recibido, al editor de codigo.
+     * 
+     * @implSpec
+     *           Crea una nueva pestana con la ruta del archivo recibido.
+     * @implSpec
+     *           Agrega el contenido del archivo en la pestana si existe.
+     * @implSpec
+     *           Agrega esa pestana a la lista de pestanas activas.
+     * @implSpec
+     *           Agrega la pestana al editor de codigo.
+     * @implSpec
+     *           Selecciona la pestana recien agregada.
+     * 
+     * @param arc -> Archivo a crear pestana
+     */
     private void agregarPestana(Archivo arc) {
-        System.out.println("Agregando pestaña para: " + arc.getRuta());
         try {
             Pestana pestana = new Pestana(arc.getRuta().toString());
             String contenido = arc.toString();
-            if (contenido != null) {
+            Tab tab;
+
+            if (contenido != null)
                 pestana.setText(contenido);
-            }
+
             App.pestanas.add(pestana);
-            Tab tab = new Tab(arc.getRuta().getFileName().toString(), pestana);
+            tab = new Tab(arc.getRuta().getFileName().toString(), pestana);
             TabEditor.getTabs().add(tab);
             TabEditor.getSelectionModel().select(tab);
             System.out.println("Pestaña agregada exitosamente: " + arc.getRuta().getFileName());
+
         } catch (Exception e) {
             System.out.println("Error al agregar pestaña: " + e.getMessage());
             e.printStackTrace();
@@ -259,10 +307,159 @@ public class MainController {
         }
     }
 
+    /**
+     * Metodo encargado de mostrar una alerta
+     * 
+     * @param titulo  -> Titulo de la alerta
+     * @param mensaje -> Mensaje de la alerta
+     */
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(titulo);
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+    /**
+     * Metodo encargado de mostrar un InputDialog para obtener una respuesta.
+     * 
+     * @param titulo    -> Titulo del dialog
+     * @param cabecera  -> Cabecera del dialog
+     * @param contenido -> Contenido del dialog
+     * @return Resultado obtenido de la ventana del dialog | null en caso de no
+     *         exitir respuesta.
+     */
+    private String mostrarInputDialog(String titulo, String cabecera, String contenido) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(titulo);
+        dialog.setHeaderText(cabecera);
+        dialog.setContentText(contenido);
+
+        Optional<String> resultado = dialog.showAndWait();
+        if (!resultado.isPresent() || resultado.get().trim().isEmpty())
+            return null;
+        return resultado.get().trim();
+    }
+
+    private void AgregarColumnas() {
+        // Cargamos la tbl a la vista
+        TableColumn<Componente, String> colId = new TableColumn<>("Id");
+        colId.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+        colId.setResizable(false);
+        colId.setReorderable(false);
+        colId.setSortable(false);
+        TableColumn<Componente, String> colTipo = new TableColumn<>("Tipo");
+        colTipo.setCellValueFactory(cellData -> cellData.getValue().tipoProperty());
+        colTipo.setResizable(false);
+        colTipo.setReorderable(false);
+        colTipo.setSortable(false);
+        TableColumn<Componente, String> colGrupo = new TableColumn<>("Grupo");
+        colGrupo.setCellValueFactory(cellData -> cellData.getValue().grupoProperty());
+        colGrupo.setResizable(false);
+        colGrupo.setReorderable(false);
+        colGrupo.setSortable(false);
+        TableColumn<Componente, String> colLine = new TableColumn<>("Line");
+        colLine.setCellValueFactory(cellData -> cellData.getValue().lineProperty());
+        colLine.setResizable(false);
+        colLine.setReorderable(false);
+        colLine.setSortable(false);
+        TableColumn<Componente, String> colPos = new TableColumn<>("Pos");
+        colPos.setCellValueFactory(cellData -> cellData.getValue().posProperty());
+        colPos.setResizable(false);
+        colPos.setReorderable(false);
+        colPos.setSortable(false);
+        TblTokens.getColumns().addAll(colId, colTipo, colGrupo, colLine, colPos);
+
+        datos = FXCollections.observableArrayList();
+    }
+
+    private void AgregarReg(Token token) {
+        String[] reg = token.toString().split("~");
+        String linea = reg[0], col = reg[1], tipo = reg[2], lexema = reg[3];
+        datos.add(new Componente((id++) + "", tipo, lexema, linea, col));
+        TblTokens.setItems(datos);
+    }
+
+    private void LimpiarTabla() {
+        TblTokens.getItems().clear();
+        TblTokens.getColumns().clear();
+        id = 1;
+    }
+}
+
+class Componente {
+    private SimpleStringProperty id;
+    private SimpleStringProperty tipo;
+    private SimpleStringProperty grupo;
+    private SimpleStringProperty line;
+    private SimpleStringProperty pos;
+
+    public Componente(String id, String tipo, String grupo, String line, String pos) {
+        this.id = new SimpleStringProperty(id);
+        this.tipo = new SimpleStringProperty(tipo);
+        this.grupo = new SimpleStringProperty(grupo);
+        this.line = new SimpleStringProperty(line);
+        this.pos = new SimpleStringProperty(pos);
+    }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public void setId(String id) {
+        this.id = new SimpleStringProperty(id);
+    }
+
+    public String getTipo() {
+        return tipo.get();
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = new SimpleStringProperty(tipo);
+    }
+
+    public String getGrupo() {
+        return grupo.get();
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = new SimpleStringProperty(grupo);
+    }
+
+    public String getLine() {
+        return line.get();
+    }
+
+    public void setLine(String line) {
+        this.line = new SimpleStringProperty(line);
+    }
+
+    public String getPos() {
+        return pos.get();
+    }
+
+    public void setPos(String pos) {
+        this.pos = new SimpleStringProperty(pos);
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public SimpleStringProperty tipoProperty() {
+        return tipo;
+    }
+
+    public SimpleStringProperty grupoProperty() {
+        return grupo;
+    }
+
+    public SimpleStringProperty lineProperty() {
+        return line;
+    }
+
+    public SimpleStringProperty posProperty() {
+        return pos;
+    }
+
 }

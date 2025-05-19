@@ -1,3 +1,58 @@
 eclipse_workspace/.metadata/
 /Interfaz/Compilador/target/
 compilador/target
+# Archivos compilados de Java
+*.class
+
+# Salida del compilador de Maven
+/target/
+
+# Archivos de logs
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de Eclipse
+.project
+.classpath
+.settings/
+
+# Archivos de configuración de IntelliJ IDEA
+*.iml
+.idea/
+out/
+
+# Archivos de NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Archivos de empaquetado temporales
+*.jar
+*.war
+*.ear
+
+# Archivos de pruebas y cobertura
+*.ec
+*.exec
+jacoco*.exec
+test-output/
+surefire-reports/
+coverage-reports/
+
+# Archivos de dependencia que no deben ser subidos (si los llegas a generar)
+dependency-reduced-pom.xml
+
+# Archivos de backup o temporales
+*~
+*.swp
+*.bak
+*.tmp
+
+# Carpeta de Stash (si llegas a usar Git Worktree o herramientas especiales)
+.stash/
