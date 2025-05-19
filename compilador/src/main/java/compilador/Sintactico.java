@@ -15,6 +15,7 @@ public class Sintactico {
     private HashMap<String, String> tbl_ll = new HashMap<>(); // ? estructura que reguarda la tabla LL
     private Vector<String> term; // ? Lista de terminales
     public List<String> errores; // ? Almacena los errores
+    public List<String> historial_pila;
     private String tipo = "", lexema = "", linea = "", columna = "", cima = "";
 
     /**
@@ -27,6 +28,7 @@ public class Sintactico {
         pila.push("$");
         pila.push(sim_ini != null ? sim_ini : "P");
         errores = new ArrayList<>();
+        historial_pila = new ArrayList<String>();
     }
 
     /**
@@ -40,9 +42,14 @@ public class Sintactico {
      */
     public boolean AnalizarToken(Token token) {
         System.out.println("Pila: " + pila);
+        historial_pila.add(pila + "");
         if (!extraerDatosToken(token))
             return false;
         cima = pila.peek();
+
+        if (cima.equals("$"))
+            return false;
+
         if (term.contains(cima))
             return procesarTerminal();
         if (cima.equals("@") || cima.equals("`") || cima.equals("\"\"\"\""))
@@ -105,22 +112,22 @@ public class Sintactico {
     private boolean procesarProduccionEspecial(Token token) {
         switch (cima) {
             case "@":
-                pila.pop(); // Epsilon (vacío)
-                return AnalizarToken(token);
+                pila.pop(); // Épsilon: solo sacamos el no-terminal
+                return AnalizarToken(token); // Reprocesar el mismo token
             case "`":
-                pila.pop(); // Panic mode
+                pila.pop(); // Sacamos la marca de error
                 errores.add(String.format(
                         "Error en la línea %s, columna %s: Token inesperado '%s', se omitió",
                         linea, columna, lexema));
-                return true;
+                return true; // Avanzar token
             case "\"\"\"\"":
-                pila.pop(); // Descartar token
+                pila.pop(); // Sacamos la cima
                 errores.add(String.format(
                         "Error en la línea %s, columna %s: Token '%s' descartado",
                         linea, columna, lexema));
-                return true;
+                return AnalizarToken(token); // Reintentar con el mismo token
             default:
-                return true; // No debería ocurrir
+                return true;
         }
     }
 
@@ -228,5 +235,4 @@ public class Sintactico {
             System.out.println("Error al importar la tbl: " + e);
         }
     }
-
 }

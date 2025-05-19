@@ -2,12 +2,18 @@ package compilador;
 
 import java.io.File;
 import java.util.Optional;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
@@ -17,6 +23,9 @@ import javafx.stage.Stage;
 
 public class MainController {
 
+    private int id = 1;
+    private ObservableList<Componente> datos;
+
     @FXML
     private TabPane TabEditor;
     @FXML
@@ -24,7 +33,9 @@ public class MainController {
     @FXML
     private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar;
     @FXML
-    private TextArea outputText;
+    private TextArea TxtSinRes, TxtConsola;
+    @FXML
+    TableView<Componente> TblTokens;
 
     /**
      * Metodo encargado de generar una nueva pestana y un nuevo archivo de codigo
@@ -94,7 +105,7 @@ public class MainController {
             String ruta;
             Archivo arc;
             if (stage != null) {
-                ruta = seleccionarArc(stage, ".lcl");
+                ruta = seleccionarArc(stage, "*.lcl");
                 if (ruta != null) {
                     for (Archivo a : App.archivos)
                         if (a.getRuta().toString().equals(ruta)) {
@@ -188,26 +199,39 @@ public class MainController {
             boolean ban = true;
             Token token;
 
+            sin.importarExcel("src/main/resources/compilador/Simbolos_MegaVerdaderos.txt");
+            LimpiarTabla();
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
+            AgregarColumnas();
 
             // ? Control de seguimiento para analisis de tokens
             while (ban) {
                 token = lex.SiguienteToken();
                 if (token == null)
                     break;
-                ban = sin.AnalizarToken(token);
+                // TODO : El sintactico aun no se encuentra listo
+                // ban = sin.AnalizarToken(token);
+                AgregarReg(token);
             }
+
+            TxtConsola.clear();
+            lex.errores.forEach(e -> TxtConsola.appendText(
+                    "- " + String.format("Error en la linea %d, columna %d : %s -> %s", e.linea, e.columna, e.tipo,
+                            e.lexema) + "\n"));
+
+            TxtSinRes.clear();
+            TxtSinRes.appendText("Pila:\n");
+            sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
 
             // ? Si existe algun error, el analisis fue incorrecto, en caso contrario,
             // ? analisis correcto
             if (!sin.errores.isEmpty()) {
-                System.err.println("Errores de sintaxis encontrados:");
-                sin.errores.forEach(e -> System.err.println("  - " + e));
+                TxtSinRes.appendText("Analisis Sintactico Erroneo");
+                sin.errores.forEach(e -> TxtConsola.appendText("- " + e + "\n"));
             } else
-                System.out.println("Análisis sintáctico completado sin errores.");
+                TxtSinRes.appendText("Analisis sintáctico completado correctamente");
 
         } else {
-            System.out.println("No hay pestaña seleccionada");
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada.");
         }
     }
@@ -239,7 +263,7 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccione un archivo");
         fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Archivos de texto", ext != null ? ext : ".txt"));
+                .add(new FileChooser.ExtensionFilter("Archivos de texto", ext != null ? ext : "*.txt"));
         File res = fileChooser.showOpenDialog(stage);
         return res != null ? res.getAbsolutePath().trim() : null;
     }
@@ -316,4 +340,126 @@ public class MainController {
             return null;
         return resultado.get().trim();
     }
+
+    private void AgregarColumnas() {
+        // Cargamos la tbl a la vista
+        TableColumn<Componente, String> colId = new TableColumn<>("Id");
+        colId.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+        colId.setResizable(false);
+        colId.setReorderable(false);
+        colId.setSortable(false);
+        TableColumn<Componente, String> colTipo = new TableColumn<>("Tipo");
+        colTipo.setCellValueFactory(cellData -> cellData.getValue().tipoProperty());
+        colTipo.setResizable(false);
+        colTipo.setReorderable(false);
+        colTipo.setSortable(false);
+        TableColumn<Componente, String> colGrupo = new TableColumn<>("Grupo");
+        colGrupo.setCellValueFactory(cellData -> cellData.getValue().grupoProperty());
+        colGrupo.setResizable(false);
+        colGrupo.setReorderable(false);
+        colGrupo.setSortable(false);
+        TableColumn<Componente, String> colLine = new TableColumn<>("Line");
+        colLine.setCellValueFactory(cellData -> cellData.getValue().lineProperty());
+        colLine.setResizable(false);
+        colLine.setReorderable(false);
+        colLine.setSortable(false);
+        TableColumn<Componente, String> colPos = new TableColumn<>("Pos");
+        colPos.setCellValueFactory(cellData -> cellData.getValue().posProperty());
+        colPos.setResizable(false);
+        colPos.setReorderable(false);
+        colPos.setSortable(false);
+        TblTokens.getColumns().addAll(colId, colTipo, colGrupo, colLine, colPos);
+
+        datos = FXCollections.observableArrayList();
+    }
+
+    private void AgregarReg(Token token) {
+        String[] reg = token.toString().split("~");
+        String linea = reg[0], col = reg[1], tipo = reg[2], lexema = reg[3];
+        datos.add(new Componente((id++) + "", tipo, lexema, linea, col));
+        TblTokens.setItems(datos);
+    }
+
+    private void LimpiarTabla() {
+        TblTokens.getItems().clear();
+        TblTokens.getColumns().clear();
+        id = 1;
+    }
+}
+
+class Componente {
+    private SimpleStringProperty id;
+    private SimpleStringProperty tipo;
+    private SimpleStringProperty grupo;
+    private SimpleStringProperty line;
+    private SimpleStringProperty pos;
+
+    public Componente(String id, String tipo, String grupo, String line, String pos) {
+        this.id = new SimpleStringProperty(id);
+        this.tipo = new SimpleStringProperty(tipo);
+        this.grupo = new SimpleStringProperty(grupo);
+        this.line = new SimpleStringProperty(line);
+        this.pos = new SimpleStringProperty(pos);
+    }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public void setId(String id) {
+        this.id = new SimpleStringProperty(id);
+    }
+
+    public String getTipo() {
+        return tipo.get();
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = new SimpleStringProperty(tipo);
+    }
+
+    public String getGrupo() {
+        return grupo.get();
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = new SimpleStringProperty(grupo);
+    }
+
+    public String getLine() {
+        return line.get();
+    }
+
+    public void setLine(String line) {
+        this.line = new SimpleStringProperty(line);
+    }
+
+    public String getPos() {
+        return pos.get();
+    }
+
+    public void setPos(String pos) {
+        this.pos = new SimpleStringProperty(pos);
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public SimpleStringProperty tipoProperty() {
+        return tipo;
+    }
+
+    public SimpleStringProperty grupoProperty() {
+        return grupo;
+    }
+
+    public SimpleStringProperty lineProperty() {
+        return line;
+    }
+
+    public SimpleStringProperty posProperty() {
+        return pos;
+    }
+
 }

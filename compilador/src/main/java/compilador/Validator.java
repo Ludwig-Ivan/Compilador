@@ -62,7 +62,7 @@ public class Validator {
      */
     public static boolean esPalabraReservada(String palabra) {
         for (String pr : PALABRAS_RESERVADAS)
-            if (pr.equalsIgnoreCase(palabra))
+            if (pr.equals(palabra))
                 return true;
         return false;
     }

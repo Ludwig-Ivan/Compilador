@@ -5,6 +5,7 @@ module compilador {
     requires org.fxmisc.richtext;
     requires org.fxmisc.flowless;
     requires reactfx;
+    requires javafx.base;
 
     opens compilador to javafx.fxml;
 
