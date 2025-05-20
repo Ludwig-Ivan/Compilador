@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -17,6 +18,30 @@ public class Sintactico {
     public List<String> errores; // ? Almacena los errores
     public List<String> historial_pila;
     private String tipo = "", lexema = "", linea = "", columna = "", cima = "";
+    private Map<String, String> descripciones = Map.ofEntries(
+            Map.entry("P", "< programa >"), Map.entry("D's", "< declaracion >"),
+            Map.entry("D", "< int, float, char, cadena, bool >"), Map.entry("LD", "< ID >"), Map.entry("LD'", "< , >"),
+            Map.entry("V", "< ID >"), Map.entry("V'", "< = >"), Map.entry("A's", "< asignacion >"),
+            Map.entry("A", "< ID >"), Map.entry("A'", "< =, -=, +=, *=, /=, ++, -- >"),
+            Map.entry("F's", " < funcion >"), Map.entry("F", "< func >"),
+            Map.entry("TR", "< int, float, char, cadena, bool, void >"), Map.entry("M", "< main >"),
+            Map.entry("Arg's", "< argumento >"), Map.entry("Larg's", "< , >"),
+            Map.entry("Arg", "< int, float, char, cadena, bool >"), Map.entry("B", "< { >"),
+            Map.entry("S's", "< sentencia >"),
+            Map.entry("S", "< declaracion, asignacion, condicional, ciclo, salto, llamada, print, read, unario"),
+            Map.entry("C", "< if >"), Map.entry("C'", "< else >"), Map.entry("C''", "< {, if >"),
+            Map.entry("W", "< while, do >"), Map.entry("J", "< break, continue, return >"),
+            Map.entry("RV", "< expresion >"), Map.entry("L", "< # >"), Map.entry("PR", "< print >"),
+            Map.entry("R", "< read >"), Map.entry("T", "< int, float, char, cadena, bool >"),
+            Map.entry("E", "< expresión >"), Map.entry("TN", "< ternario >"), Map.entry("TN'", "< ? >"),
+            Map.entry("L1", "< operador binaria >"), Map.entry("L1'", "< &&, || >"),
+            Map.entry("L2", "< operador relacional >"), Map.entry("L2'", "< ==, !=, <, >, <=, >= >"),
+            Map.entry("L3", "< aritmetica >"), Map.entry("L3'", "< +, - >"), Map.entry("T1", "< aritmetica >"),
+            Map.entry("T1'", "< *, /, % >"), Map.entry("F1", "< operacion unaria >"), Map.entry("P1", "< prefijo >"),
+            Map.entry("S1", "< subfijo >"),
+            Map.entry("F2", "< ID, numero, decimal, cadena, caracter, #, true, false, ( >"),
+            Map.entry("OU", "< -, ! >"), Map.entry("OU'", "< ++, -- >"),
+            Map.entry("default", "un elemento del lenguaje"));
 
     /**
      * Constructor para dar pie al analisis sintactico
@@ -41,7 +66,6 @@ public class Sintactico {
      *         de no poder analizar el token.
      */
     public boolean AnalizarToken(Token token) {
-        System.out.println("Pila: " + pila);
         historial_pila.add(pila + "");
         if (!extraerDatosToken(token))
             return false;
@@ -52,8 +76,7 @@ public class Sintactico {
 
         if (term.contains(cima))
             return procesarTerminal();
-        if (cima.equals("@") || cima.equals("`") || cima.equals("\"\"\"\""))
-            return procesarProduccionEspecial(token);
+
         return expandirProduccion(token);
     }
 
@@ -109,22 +132,22 @@ public class Sintactico {
      * @return true | false para indicar que se proceso de manera correcta la
      *         produccion
      */
-    private boolean procesarProduccionEspecial(Token token) {
-        switch (cima) {
+    private boolean procesarProduccionEspecial(Token token, String sig_prod, String prod_act) {
+        String descripcion = descripciones.getOrDefault(prod_act, prod_act);
+
+        switch (sig_prod) {
             case "@":
-                pila.pop(); // Épsilon: solo sacamos el no-terminal
+                // pila.pop(); // Épsilon: solo sacamos el no-terminal
                 return AnalizarToken(token); // Reprocesar el mismo token
             case "`":
-                pila.pop(); // Sacamos la marca de error
                 errores.add(String.format(
-                        "Error en la línea %s, columna %s: Token inesperado '%s', se omitió",
-                        linea, columna, lexema));
+                        "Error de sintaxis en línea %d, columna %d: se esperaba %s, pero se encontró '%s'. Se ignoró el token para intentar recuperar.",
+                        token.linea, token.columna, descripcion, lexema));
                 return true; // Avanzar token
             case "\"\"\"\"":
-                pila.pop(); // Sacamos la cima
                 errores.add(String.format(
-                        "Error en la línea %s, columna %s: Token '%s' descartado",
-                        linea, columna, lexema));
+                        "Error de sintaxis en línea %d, columna %d: se esperaba %s, pero se encontró '%s'. Se descartó el símbolo esperado para intentar recuperar.",
+                        token.linea, token.columna, descripcion, lexema));
                 return AnalizarToken(token); // Reintentar con el mismo token
             default:
                 return true;
@@ -150,6 +173,9 @@ public class Sintactico {
                     linea, columna, prod_act, lexema));
             return false;
         }
+
+        if (prod_sig.equals("@") || prod_sig.equals("`") || prod_sig.equals("\"\"\"\""))
+            return procesarProduccionEspecial(token, prod_sig, prod_act);
 
         colocarProduccionEnPila(prod_sig);
         return AnalizarToken(token);

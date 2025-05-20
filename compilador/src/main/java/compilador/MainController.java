@@ -209,8 +209,7 @@ public class MainController {
                 token = lex.SiguienteToken();
                 if (token == null)
                     break;
-                // TODO : El sintactico aun no se encuentra listo
-                // ban = sin.AnalizarToken(token);
+                ban = sin.AnalizarToken(token);
                 AgregarReg(token);
             }
 
