@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 
+import compilador.TablaToken.Token;
+
 public class Sintactico {
 
     private Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
@@ -140,14 +142,10 @@ public class Sintactico {
                 // pila.pop(); // Épsilon: solo sacamos el no-terminal
                 return AnalizarToken(token); // Reprocesar el mismo token
             case "`":
-                errores.add(String.format(
-                        "Error de sintaxis en línea %d, columna %d: se esperaba %s, pero se encontró '%s'. Se ignoró el token para intentar recuperar.",
-                        token.linea, token.columna, descripcion, lexema));
+                App.tbl_error.agregarError(descripcion, lexema, token.getLinea(), token.getColumna());
                 return true; // Avanzar token
             case "\"\"\"\"":
-                errores.add(String.format(
-                        "Error de sintaxis en línea %d, columna %d: se esperaba %s, pero se encontró '%s'. Se descartó el símbolo esperado para intentar recuperar.",
-                        token.linea, token.columna, descripcion, lexema));
+                App.tbl_error.agregarError(descripcion, lexema, token.getLinea(), token.getColumna());
                 return AnalizarToken(token); // Reintentar con el mismo token
             default:
                 return true;

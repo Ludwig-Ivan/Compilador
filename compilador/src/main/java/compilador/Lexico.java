@@ -1,14 +1,7 @@
 package compilador;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
 public class Lexico {
 
-    public List<Token> errores;
-    private List<Token> tokens;
-    private ListIterator<Token> tokens_i;
     private StringBuilder buffer;
     private int i, linea, columna;
 
@@ -16,9 +9,12 @@ public class Lexico {
      * Metodo que inicializa/reinicia todos los elementos para el analisis
      */
     private void inicializarAnalisis() {
-        tokens = new ArrayList<>();
+        App.tbl_token = new TablaToken();
+        App.tbl_id = new TablaID();
+        App.tbl_lit = new TablaLit();
+        App.tbl_error = new TablaError();
         buffer = new StringBuilder();
-        errores = new ArrayList<>();
+
         i = 0;
         linea = 1;
         columna = 1;
@@ -56,8 +52,8 @@ public class Lexico {
             manejarCaracterInvalido(actual);
         }
 
-        tokens.add(new Token("$", "$", linea, columna));
-        tokens_i = tokens.listIterator();
+        App.tbl_token.AgregarToken("$", 0, 0, "$");
+        App.tbl_token.ResetPos();
     }
 
     /**
@@ -107,10 +103,13 @@ public class Lexico {
 
         String palabra = buffer.toString();
         if (palabra.matches("[a-zA-Z_][a-zA-Z0-9_]*"))
-            tokens.add(new Token(Validator.esPalabraReservada(palabra) ? "RESERVADAS" : "ID", palabra, linea,
-                    startColumna));
+            if (App.tbl_sim_res.containsKey(palabra)) {
+                App.tbl_token.AgregarToken(App.tbl_sim_res.get(palabra), linea, startColumna, palabra);
+            } else {
+                App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+            }
         else
-            errores.add(new Token("ERROR_ID_INVALID", palabra, linea, startColumna));
+            App.tbl_error.agregarError("Identificaro invalido", palabra, linea, startColumna);
 
         return true;
     }
@@ -136,7 +135,7 @@ public class Lexico {
                 if (tienePunto) {
                     buffer.append(entrada.charAt(i++));
                     columna++;
-                    errores.add(new Token("ERROR_NUM_FORMAT", buffer.toString(), linea, startColumna));
+                    App.tbl_error.agregarError("Formato de numero incorrecto", buffer.toString(), linea, startColumna);
                     return true;
                 }
                 tienePunto = true;
@@ -146,14 +145,16 @@ public class Lexico {
         }
 
         String numero = buffer.toString();
-        if (numero.matches("\\d+"))
-            tokens.add(new Token("NUMERO", numero, linea, startColumna));
-        else if (numero.matches("\\d+\\.\\d+"))
-            tokens.add(new Token("DECIMAL", numero, linea, startColumna));
-        else if (numero.endsWith(".") || numero.startsWith("."))
-            errores.add(new Token("ERROR_INCOMPLETE_NUM", numero, linea, startColumna));
+        if (numero.matches("\\d+")) {
+            App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
+                    App.tbl_lit.AgregarLit("LNUM", numero, numero) + "");
+        } else if (numero.matches("\\d+\\.\\d+")) {
+            App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
+                    App.tbl_lit.AgregarLit("LDEC", numero, numero) + "");
+        } else if (numero.endsWith(".") || numero.startsWith("."))
+            App.tbl_error.agregarError("Numero incompleto", null, linea, startColumna);
         else
-            errores.add(new Token("ERROR_NUM_FORMAT", numero, linea, startColumna));
+            App.tbl_error.agregarError("Formato de numero incorrecto", null, linea, startColumna);
 
         return true;
     }
@@ -171,27 +172,38 @@ public class Lexico {
             return false;
 
         buffer.setLength(0);
-        int startColumna = columna++;
-        i++;
+        int startColumna = columna;
+        int startLinea = linea;
+        i++; // Avanza para saltar la comilla inicial
+        columna++;
 
-        while (i < entrada.length() && entrada.charAt(i) != '"' && entrada.charAt(i) != '\n') {
-            buffer.append(entrada.charAt(i++));
-            columna++;
-        }
-
-        if (i >= entrada.length() || entrada.charAt(i) == '\n') {
-            errores.add(new Token("ERROR_UNCLOSED_CAD", '"' + buffer.toString(), linea, startColumna));
-            if (i < entrada.length() && entrada.charAt(i) == '\n') {
+        while (i < entrada.length() && entrada.charAt(i) != '"' /* && entrada.charAt(i) != '\n' */) {
+            char c = entrada.charAt(i);
+            if (c == '\n') {
                 linea++;
                 columna = 1;
-                i++;
+            } else {
+                columna++;
             }
+            buffer.append(c);
+            i++;
+        }
+
+        if (i >= entrada.length() /* || entrada.charAt(i) == '\n' */) {
+            App.tbl_error.agregarError("Cadeno no cerrada", "Fin de Archivo", linea, columna);
+            // if (i < entrada.length() && entrada.charAt(i) == '\n') {
+            // linea++;
+            // columna = 1;
+            // i++;
+            // }
             return true;
         }
 
         i++;
         columna++;
-        tokens.add(new Token("CADENA", buffer.toString(), linea, startColumna));
+
+        App.tbl_token.AgregarToken("LITERAL", startLinea, startColumna,
+                App.tbl_lit.AgregarLit("LCAD", buffer.toString(), "\"" + buffer.toString() + "\"") + "");
         return true;
     }
 
@@ -211,29 +223,33 @@ public class Lexico {
         int startColumna = columna++;
         i++;
 
-        while (i < entrada.length() && entrada.charAt(i) != '\'' && entrada.charAt(i) != '\n') {
-            buffer.append(entrada.charAt(i++));
-            columna++;
-        }
-
-        if (i >= entrada.length() || entrada.charAt(i) == '\n') {
-            errores.add(new Token("ERROR_UNCLOSED_CHAR", "'" + buffer.toString(), linea, startColumna));
-            if (i < entrada.length() && entrada.charAt(i) == '\n') {
-                linea++;
-                columna = 1;
-                i++;
-            }
+        // Verifica si hay al menos un carácter después de la comilla inicial
+        if (i >= entrada.length()) {
+            App.tbl_error.agregarError("Caracter no cerrado", "Fin de Linea", linea, startColumna);
             return true;
         }
 
+        char caracter = entrada.charAt(i);
+        buffer.append(caracter);
         i++;
         columna++;
 
-        String caracter = buffer.toString();
-        if (caracter.length() == 1 || caracter.isEmpty())
-            tokens.add(new Token("CARACTER", caracter, linea, startColumna));
+        // Esperamos la comilla de cierre
+        if (i >= entrada.length() || entrada.charAt(i) != '\'') {
+            App.tbl_error.agregarError("Caracter no cerrado", entrada.charAt(i) + "", linea, columna);
+            return true;
+        }
+
+        // Comilla de cierre encontrada
+        i++;
+        columna++;
+
+        // Validar que sea un único carácter (ya validado implícitamente)
+        if (buffer.length() == 1)
+            App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
+                    App.tbl_lit.AgregarLit("LCAR", buffer.toString(), "\'" + buffer.toString() + "\'") + "");
         else
-            errores.add(new Token("ERROR_INVALID_CHAR", "'" + caracter + "'", linea, startColumna));
+            App.tbl_error.agregarError("Char invalido", "Mas de un caracter", linea, startColumna);
 
         return true;
     }
@@ -282,7 +298,7 @@ public class Lexico {
 
                 if (!cerrado) {
                     String comentarioNoCerrado = entrada.substring(startIndex);
-                    errores.add(new Token("ERROR_UNCLOSED_COMENTARY", comentarioNoCerrado, linea, startColumna));
+                    App.tbl_error.agregarError("Comentario no cerrado", comentarioNoCerrado, linea, columna);
                     i = entrada.length();
                 }
                 return true;
@@ -303,8 +319,8 @@ public class Lexico {
         if (i + 1 >= entrada.length())
             return false;
         String doble = "" + entrada.charAt(i) + entrada.charAt(i + 1);
-        if (Validator.esOperador(doble)) {
-            tokens.add(new Token("OPERADOR", doble, linea, columna));
+        if (App.tbl_sim_res.containsKey(doble)) {
+            App.tbl_token.AgregarToken(App.tbl_sim_res.get(doble), linea, columna, doble);
             i += 2;
             columna += 2;
             return true;
@@ -320,13 +336,8 @@ public class Lexico {
      */
     private boolean manejarOperadoresYSimbolos(char actual) {
         String single = String.valueOf(actual);
-        if (Validator.esOperador(single)) {
-            tokens.add(new Token("OPERADOR", single, linea, columna++));
-            i++;
-            return true;
-        }
-        if (Validator.esSimbolo(single)) {
-            tokens.add(new Token("SIMBOLO", single, linea, columna++));
+        if (App.tbl_sim_res.containsKey(single)) {
+            App.tbl_token.AgregarToken(App.tbl_sim_res.get(single), linea, columna++, single);
             i++;
             return true;
         }
@@ -340,19 +351,8 @@ public class Lexico {
      * @return true / false
      */
     private void manejarCaracterInvalido(char actual) {
-        errores.add(new Token("ERROR_INVALID_CARACTER", String.valueOf(actual), linea, columna++));
+        App.tbl_error.agregarError("ERROR_INVALID_CARACTER", actual + "", linea, columna++);
         i++;
-    }
-
-    /**
-     * Metodo para obtener el siguiente token dentro de la cadena a analizar
-     * 
-     * @return Token analizado | null en caso de no encontrar mas tokens
-     */
-    public Token SiguienteToken() {
-        if (tokens_i.hasNext())
-            return tokens_i.next();
-        return null;
     }
 
 }
