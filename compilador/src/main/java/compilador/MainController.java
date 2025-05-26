@@ -2,17 +2,16 @@ package compilador;
 
 import java.io.File;
 import java.util.Optional;
-
+import compilador.TablaID.Identificador;
+import compilador.TablaLit.Literal;
+import compilador.TablaToken.Token;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
@@ -23,9 +22,6 @@ import javafx.stage.Stage;
 
 public class MainController {
 
-    private int id = 1;
-    private ObservableList<Componente> datos;
-
     @FXML
     private TabPane TabEditor;
     @FXML
@@ -35,7 +31,11 @@ public class MainController {
     @FXML
     private TextArea TxtSinRes, TxtConsola;
     @FXML
-    TableView<Componente> TblTokens;
+    TableView<Token> TblTokens;
+    @FXML
+    TableView<Identificador> TblID;
+    @FXML
+    TableView<Literal> TblLit;
 
     /**
      * Metodo encargado de generar una nueva pestana y un nuevo archivo de codigo
@@ -193,30 +193,27 @@ public class MainController {
         if (tab != null && tab.getContent() instanceof Pestana) {
             Pestana pestana = (Pestana) tab.getContent();
             String entrada = pestana.getText();
-
             Lexico lex = new Lexico();
             Sintactico sin = new Sintactico("P");
             boolean ban = true;
             Token token;
 
+            TxtConsola.clear();
             sin.importarExcel("src/main/resources/compilador/Simbolos_MegaVerdaderos.txt");
-            LimpiarTabla();
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
-            AgregarColumnas();
 
             // ? Control de seguimiento para analisis de tokens
             while (ban) {
-                token = lex.SiguienteToken();
+                token = App.tbl_token.SiguienteToken();
                 if (token == null)
                     break;
-                ban = sin.AnalizarToken(token);
-                AgregarReg(token);
+                // ban = sin.AnalizarToken(token);
             }
 
-            TxtConsola.clear();
-            lex.errores.forEach(e -> TxtConsola.appendText(
-                    "- " + String.format("Error en la linea %d, columna %d : %s -> %s", e.linea, e.columna, e.tipo,
-                            e.lexema) + "\n"));
+            App.tbl_token.MostrarTokens(TblTokens);
+            App.tbl_id.MostrarIDs(TblID);
+            App.tbl_lit.MostrarLits(TblLit);
+            App.tbl_error.MostrarErrores(TxtConsola);
 
             TxtSinRes.clear();
             TxtSinRes.appendText("Pila:\n");
@@ -340,50 +337,6 @@ public class MainController {
         return resultado.get().trim();
     }
 
-    private void AgregarColumnas() {
-        // Cargamos la tbl a la vista
-        TableColumn<Componente, String> colId = new TableColumn<>("Id");
-        colId.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        colId.setResizable(false);
-        colId.setReorderable(false);
-        colId.setSortable(false);
-        TableColumn<Componente, String> colTipo = new TableColumn<>("Tipo");
-        colTipo.setCellValueFactory(cellData -> cellData.getValue().tipoProperty());
-        colTipo.setResizable(false);
-        colTipo.setReorderable(false);
-        colTipo.setSortable(false);
-        TableColumn<Componente, String> colGrupo = new TableColumn<>("Grupo");
-        colGrupo.setCellValueFactory(cellData -> cellData.getValue().grupoProperty());
-        colGrupo.setResizable(false);
-        colGrupo.setReorderable(false);
-        colGrupo.setSortable(false);
-        TableColumn<Componente, String> colLine = new TableColumn<>("Line");
-        colLine.setCellValueFactory(cellData -> cellData.getValue().lineProperty());
-        colLine.setResizable(false);
-        colLine.setReorderable(false);
-        colLine.setSortable(false);
-        TableColumn<Componente, String> colPos = new TableColumn<>("Pos");
-        colPos.setCellValueFactory(cellData -> cellData.getValue().posProperty());
-        colPos.setResizable(false);
-        colPos.setReorderable(false);
-        colPos.setSortable(false);
-        TblTokens.getColumns().addAll(colId, colTipo, colGrupo, colLine, colPos);
-
-        datos = FXCollections.observableArrayList();
-    }
-
-    private void AgregarReg(Token token) {
-        String[] reg = token.toString().split("~");
-        String linea = reg[0], col = reg[1], tipo = reg[2], lexema = reg[3];
-        datos.add(new Componente((id++) + "", tipo, lexema, linea, col));
-        TblTokens.setItems(datos);
-    }
-
-    private void LimpiarTabla() {
-        TblTokens.getItems().clear();
-        TblTokens.getColumns().clear();
-        id = 1;
-    }
 }
 
 class Componente {

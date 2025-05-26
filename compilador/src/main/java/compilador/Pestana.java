@@ -61,14 +61,16 @@ public class Pestana extends StackPane {
     private static final String SEMICOLON_PATTERN = "\\;";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String CHAR_PATTERN = "'([^'\\\\]|\\\\.)'";
-    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/"
-            + "|" + "/\\*[^\\v]*" + "|" + "^\\h*\\*([^\\v]*|/)";
+    private static final String COMMENT_PATTERN = "//[^\n]*" + // Comentario de línea
+            "|" + "/\\*(?:.|\\R)*?\\*/" + // Comentario de bloque válido
+            "|" + "/\\*(?:.|\\R)*";
     // TODO : Revisar este patron Error
     // private static final String ERROR_PATTERN =
     // "[^\\s\\w\"';,(){}\\[\\]+\\-*/%=<>!&|?:]";
 
     private static final Pattern PATTERN = Pattern.compile(
-            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+            "(?<COMMENT>" + COMMENT_PATTERN + ")"
+                    + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
                     + "|(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")"
                     + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
                     + "|(?<OPERATOR>" + OPERATOR_PATTERN + ")"
@@ -77,8 +79,7 @@ public class Pestana extends StackPane {
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
                     + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
                     + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<CHAR>" + CHAR_PATTERN + ")"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
+                    + "|(?<CHAR>" + CHAR_PATTERN + ")");
     // + "|(?<ERROR>" + ERROR_PATTERN + ")");
 
     public Pestana(String n) {

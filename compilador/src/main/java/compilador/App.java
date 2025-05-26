@@ -6,16 +6,87 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class App extends Application {
 
     private static Scene scene;
+    // TODO: Analizar el manejo de archivos y pestanas
     public static Vector<Archivo> archivos = new Vector<>(); // ? Vector para el manejo de archivos
     public static Vector<Pestana> pestanas = new Vector<>(); // ? Vector para el manejo de pestanas
+
+    // ? Elementos Globales del Compilador
+    public static TablaToken tbl_token;
+    public static TablaID tbl_id;
+    public static TablaLit tbl_lit;
+    public static TablaError tbl_error;
+    public static HashMap<String, String> tbl_sim_res;
+
+    // ? Inicializador de Instancia de la clase
+    {
+        tbl_sim_res = new HashMap<>();
+        // ? Palabras Reservadas
+        tbl_sim_res.put("if", "RESERVADA");
+        tbl_sim_res.put("else", "RESERVADA");
+        tbl_sim_res.put("while", "RESERVADA");
+        tbl_sim_res.put("do", "RESERVADA");
+        tbl_sim_res.put("return", "RESERVADA");
+        tbl_sim_res.put("print", "RESERVADA");
+        tbl_sim_res.put("int", "RESERVADA");
+        tbl_sim_res.put("float", "RESERVADA");
+        tbl_sim_res.put("char", "RESERVADA");
+        tbl_sim_res.put("cadena", "RESERVADA");
+        tbl_sim_res.put("bool", "RESERVADA");
+        tbl_sim_res.put("void", "RESERVADA");
+        tbl_sim_res.put("true", "RESERVADA");
+        tbl_sim_res.put("false", "RESERVADA");
+        tbl_sim_res.put("break", "RESERVADA");
+        tbl_sim_res.put("continue", "RESERVADA");
+        tbl_sim_res.put("main", "RESERVADA");
+        tbl_sim_res.put("read", "RESERVADA");
+
+        // ? Simbolos
+        // ? --> Simbolos Ordinarios
+        tbl_sim_res.put(",", "SIMBOLO");
+        tbl_sim_res.put(";", "SIMBOLO");
+        tbl_sim_res.put("(", "SIMBOLO");
+        tbl_sim_res.put(")", "SIMBOLO");
+        tbl_sim_res.put("{", "SIMBOLO");
+        tbl_sim_res.put("}", "SIMBOLO");
+        tbl_sim_res.put("[", "SIMBOLO");
+        tbl_sim_res.put("]", "SIMBOLO");
+        tbl_sim_res.put("?", "SIMBOLO");
+        tbl_sim_res.put(":", "SIMBOLO");
+        tbl_sim_res.put("#", "SIMBOLO");
+        // ? --> Operadores
+        tbl_sim_res.put("+", "SIMBOLO");
+        tbl_sim_res.put("-", "SIMBOLO");
+        tbl_sim_res.put("*", "SIMBOLO");
+        tbl_sim_res.put("/", "SIMBOLO");
+        tbl_sim_res.put("%", "SIMBOLO");
+        tbl_sim_res.put("=", "SIMBOLO");
+        tbl_sim_res.put("+=", "SIMBOLO");
+        tbl_sim_res.put("-=", "SIMBOLO");
+        tbl_sim_res.put("*=", "SIMBOLO");
+        tbl_sim_res.put("/=", "SIMBOLO");
+        tbl_sim_res.put("==", "SIMBOLO");
+        tbl_sim_res.put("!=", "SIMBOLO");
+        tbl_sim_res.put("<", "SIMBOLO");
+        tbl_sim_res.put(">", "SIMBOLO");
+        tbl_sim_res.put("<=", "SIMBOLO");
+        tbl_sim_res.put(">=", "SIMBOLO");
+        tbl_sim_res.put("&&", "SIMBOLO");
+        tbl_sim_res.put("||", "SIMBOLO");
+        tbl_sim_res.put("!", "SIMBOLO");
+        tbl_sim_res.put("++", "SIMBOLO");
+        tbl_sim_res.put("--", "SIMBOLO");
+    }
+
     // TODO: agregar mas configuraciones iniciales
     //Hola como estas
     public static int fontSizeGlobal = 12; // ? Configuracion inicial de fuente establecida en la App
+    public static String rutaProyecto = "";
 
     /**
      * Metodo para inicializar la escena principal
