@@ -12,6 +12,8 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -24,18 +26,70 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem fx:id="MenuItemNuevo" mnemonicParsing="false" onAction="#AccionToolBarBtnNuevo" text="Nuevo" />
-                    <MenuItem fx:id="MenuItemAbrir" mnemonicParsing="false" onAction="#AccionToolBarBtnAbrir" text="Abrir" />
-                    <MenuItem fx:id="MenuItemGuardar" mnemonicParsing="false" onAction="#AccionToolBarBtnGuardar" text="Guardar" />
-                    <MenuItem mnemonicParsing="false" text="Recientes" />
-                    <MenuItem mnemonicParsing="false" text="Cerrar" />
-                    <MenuItem mnemonicParsing="false" text="Cerrar todos" />
-                    <MenuItem mnemonicParsing="false" text="Guardar como" />
-                    <MenuItem mnemonicParsing="false" text="Guardar todos" />
-                    <MenuItem mnemonicParsing="false" text="Mover" />
-                    <MenuItem mnemonicParsing="false" text="Renombrar" />
-                    <MenuItem mnemonicParsing="false" text="Actualizar" />
-                    <MenuItem mnemonicParsing="false" text="Salir" />
+                    <MenuItem fx:id="MenuItemNuevo" mnemonicParsing="false" onAction="#AccionToolBarBtnNuevo" text="Nuevo">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/new-file.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem fx:id="MenuItemAbrir" mnemonicParsing="false" onAction="#AccionToolBarBtnAbrir" text="Abrir">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/file.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem fx:id="MenuItemGuardar" mnemonicParsing="false" onAction="#AccionToolBarBtnGuardar" text="Guardar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/film.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Recientes">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/rotation.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Cerrar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/close.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Cerrar todos">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/pin2.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Guardar como">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/calendar2.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Salir">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/pin3.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -91,10 +145,38 @@
             </MenuBar>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
               <items>
-                <Button fx:id="ToolBarBtnNuevo" mnemonicParsing="false" onAction="#AccionToolBarBtnNuevo" text="Nuevo" />
-                <Button fx:id="ToolBarBtnAbrir" mnemonicParsing="false" onAction="#AccionToolBarBtnAbrir" text="Abrir" />
-                <Button fx:id="ToolBarBtnGuardar" mnemonicParsing="false" onAction="#AccionToolBarBtnGuardar" text="Guardar" />
-                <Button fx:id="ToolBarBtnAnalizar" mnemonicParsing="false" onAction="#AccionToolBarBtnAnalizar" text="Analizar" />
+                <Button fx:id="ToolBarBtnNuevo" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#AccionToolBarBtnNuevo" text="Nuevo">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                <Button fx:id="ToolBarBtnAbrir" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#AccionToolBarBtnAbrir" text="Abrir">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/new-file.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                <Button fx:id="ToolBarBtnGuardar" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#AccionToolBarBtnGuardar" text="Guardar">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/film.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                <Button fx:id="ToolBarBtnAnalizar" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#AccionToolBarBtnAnalizar" text="Analizar">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/play.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
               </items>
             </ToolBar>
          </children>
