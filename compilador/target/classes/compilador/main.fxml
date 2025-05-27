@@ -94,50 +94,218 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Regresar" />
-                    <MenuItem mnemonicParsing="false" text="Seguir" />
-                    <MenuItem mnemonicParsing="false" text="Cortar" />
-                    <MenuItem mnemonicParsing="false" text="Copiar" />
-                    <MenuItem mnemonicParsing="false" text="Pegar" />
-                    <MenuItem mnemonicParsing="false" text="Eliminar" />
-                    <MenuItem mnemonicParsing="false" text="Seleccionar todo" />
-                    <MenuItem mnemonicParsing="false" text="Encontrar y remplazar" />
-                    <MenuItem mnemonicParsing="false" text="Encontrar siguiente" />
-                    <MenuItem mnemonicParsing="false" text="Encontrar anterior" />
+                    <MenuItem mnemonicParsing="false" text="Regresar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/fast-backward.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Seguir">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/fast-forward.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Cortar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/scissors.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Copiar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/files.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Pegar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/paste.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Eliminar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/trash.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Seleccionar todo">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/square-dashed.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Encontrar y remplazar">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/replace.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Encontrar siguiente">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/search.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Encontrar anterior">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/search%20(1).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Source">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Formatear" />
+                    <MenuItem mnemonicParsing="false" text="Formatear">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/indent.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Refactor">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Renombrar..." />
-                    <MenuItem mnemonicParsing="false" text="Mover..." />
+                    <MenuItem mnemonicParsing="false" text="Renombrar...">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/text-box-edit.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Mover...">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/arrows.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Window">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Nueva ventana" />
+                    <MenuItem mnemonicParsing="false" text="Nueva ventana">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/browser.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
                     <Menu mnemonicParsing="false" text="Editor">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Zoom +" />
-                        <MenuItem mnemonicParsing="false" text="Zoom -" />
+                        <MenuItem mnemonicParsing="false" text="Zoom +">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/zoom-in.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
+                        <MenuItem mnemonicParsing="false" text="Zoom -">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/zoom-out.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
                       </items>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/magic-wand.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                     </Menu>
                     <Menu mnemonicParsing="false" text="Apariencia">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Esconder toolbar" />
-                        <MenuItem mnemonicParsing="false" text="Full Screen" />
+                        <MenuItem mnemonicParsing="false" text="Esconder toolbar">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/tools.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
+                        <MenuItem mnemonicParsing="false" text="Full Screen">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/expand.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
                       </items>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/paint.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                     </Menu>
                     <Menu mnemonicParsing="false" text="Preferencias">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Temas" />
-                        <MenuItem mnemonicParsing="false" text="Fuentes y Letras" />
-                        <MenuItem mnemonicParsing="false" text="Rutas" />
+                        <MenuItem mnemonicParsing="false" text="Temas">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/background.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
+                        <MenuItem mnemonicParsing="false" text="Fuentes y Letras">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/font.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
+                        <MenuItem mnemonicParsing="false" text="Rutas">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/code-fork.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
                       </items>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/preference.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                     </Menu>
                   </items>
                 </Menu>

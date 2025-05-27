@@ -45,6 +45,7 @@ public class App extends Application {
         tbl_sim_res.put("continue", "RESERVADA");
         tbl_sim_res.put("main", "RESERVADA");
         tbl_sim_res.put("read", "RESERVADA");
+        tbl_sim_res.put("program", "RESERVADA");
 
         // ? Simbolos
         // ? --> Simbolos Ordinarios
@@ -84,7 +85,7 @@ public class App extends Application {
     }
 
     // TODO: agregar mas configuraciones iniciales
-    //Hola como estas
+    // Hola como estas
     public static int fontSizeGlobal = 12; // ? Configuracion inicial de fuente establecida en la App
     public static String rutaProyecto = "";
 
