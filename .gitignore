@@ -1,5 +1,4 @@
 eclipse_workspace/.metadata/
-/Interfaz/Compilador/target/
 compilador/target/
 # Archivos compilados de Java
 *.class
