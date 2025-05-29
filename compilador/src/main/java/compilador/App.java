@@ -46,6 +46,7 @@ public class App extends Application {
         tbl_sim_res.put("main", "RESERVADA");
         tbl_sim_res.put("read", "RESERVADA");
         tbl_sim_res.put("program", "RESERVADA");
+        tbl_sim_res.put("func", "RESERVADA");
 
         // ? Simbolos
         // ? --> Simbolos Ordinarios
@@ -80,8 +81,6 @@ public class App extends Application {
         tbl_sim_res.put("&&", "SIMBOLO");
         tbl_sim_res.put("||", "SIMBOLO");
         tbl_sim_res.put("!", "SIMBOLO");
-        tbl_sim_res.put("++", "SIMBOLO");
-        tbl_sim_res.put("--", "SIMBOLO");
     }
 
     // TODO: agregar mas configuraciones iniciales

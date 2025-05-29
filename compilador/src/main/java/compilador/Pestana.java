@@ -54,7 +54,7 @@ public class Pestana extends StackPane {
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
     private static final String IDENTIFIER_PATTERN = "[a-zA-Z_][a-zA-Z0-9_]*";
     private static final String NUMBER_PATTERN = "\\d+\\.?\\d*";
-    private static final String OPERATOR_PATTERN = "\\+\\+|\\-\\-|\\+|-|\\*|/|%|==|!=|<=|>=|<|>|&&|\\|\\||!|=|\\?|:";
+    private static final String OPERATOR_PATTERN = "\\+|-|\\*|/|%|==|!=|<=|>=|<|>|&&|\\|\\||!|=|\\?|:";
     private static final String PAREN_PATTERN = "\\(|\\)";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";

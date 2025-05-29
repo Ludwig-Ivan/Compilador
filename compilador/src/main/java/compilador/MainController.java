@@ -2,6 +2,7 @@ package compilador;
 
 import java.io.File;
 import java.util.Optional;
+
 import compilador.TablaID.Identificador;
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
@@ -27,7 +28,7 @@ public class MainController {
     @FXML
     private Button ToolBarBtnAbrir, ToolBarBtnNuevo, ToolBarBtnGuardar, ToolBarBtnAnalizar;
     @FXML
-    private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar;
+    private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar, MISalir;
     @FXML
     private TextArea TxtSinRes, TxtConsola;
     @FXML
@@ -36,6 +37,11 @@ public class MainController {
     TableView<Identificador> TblID;
     @FXML
     TableView<Literal> TblLit;
+
+    @FXML
+    private void AccionMISalir() {
+        ((Stage) ToolBarBtnAbrir.getParent().getScene().getWindow()).close();
+    }
 
     /**
      * Metodo encargado de generar una nueva pestana y un nuevo archivo de codigo

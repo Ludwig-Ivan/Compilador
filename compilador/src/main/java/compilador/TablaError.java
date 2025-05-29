@@ -11,8 +11,8 @@ public class TablaError {
     private final List<Error> errores = new ArrayList<>();
 
     // Agregar un nuevo error
-    public void agregarError(String tipo, String lexema, int linea, int columna) {
-        errores.add(new Error(tipo, lexema, linea, columna));
+    public void agregarError(String tipo, String lexema, int linea, int columna, String desc) {
+        errores.add(new Error(tipo, lexema, linea, columna, desc));
     }
 
     // Obtener todos los errores
@@ -42,12 +42,18 @@ public class TablaError {
         private final String lexema;
         private final int linea;
         private final int columna;
+        private final String desc;
 
-        public Error(String tipo, String lexema, int linea, int columna) {
+        public Error(String tipo, String lexema, int linea, int columna, String desc) {
             this.tipo = tipo;
             this.lexema = lexema;
             this.linea = linea;
             this.columna = columna;
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
         }
 
         public String getTipo() {
@@ -68,7 +74,8 @@ public class TablaError {
 
         @Override
         public String toString() {
-            return String.format("Error [%s] en '%s' (línea %d, columna %d) \n", tipo, lexema, linea, columna);
+            return String.format("Error [%s] en la linea %d, columna %d : %s (%s) \n", tipo, linea, columna, desc,
+                    lexema);
         }
     }
 }

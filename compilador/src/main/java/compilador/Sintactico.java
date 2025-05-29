@@ -142,10 +142,10 @@ public class Sintactico {
                 // pila.pop(); // Épsilon: solo sacamos el no-terminal
                 return AnalizarToken(token); // Reprocesar el mismo token
             case "`":
-                App.tbl_error.agregarError(descripcion, lexema, token.getLinea(), token.getColumna());
+                App.tbl_error.agregarError("SINTACTICO", lexema, token.getLinea(), token.getColumna(), descripcion);
                 return true; // Avanzar token
             case "\"\"\"\"":
-                App.tbl_error.agregarError(descripcion, lexema, token.getLinea(), token.getColumna());
+                App.tbl_error.agregarError("SINTACTICO", lexema, token.getLinea(), token.getColumna(), descripcion);
                 return AnalizarToken(token); // Reintentar con el mismo token
             default:
                 return true;
