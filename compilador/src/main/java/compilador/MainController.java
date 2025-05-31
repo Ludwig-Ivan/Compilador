@@ -1,6 +1,8 @@
 package compilador;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import compilador.TablaID.Identificador;
@@ -24,7 +26,7 @@ import javafx.stage.Stage;
 public class MainController {
 
     @FXML
-    private TabPane TabEditor;
+    private TabPane TabEditor, TabTbls;
     @FXML
     private Button ToolBarBtnAbrir, ToolBarBtnNuevo, ToolBarBtnGuardar, ToolBarBtnAnalizar;
     @FXML
@@ -33,8 +35,6 @@ public class MainController {
     private TextArea TxtSinRes, TxtConsola;
     @FXML
     TableView<Token> TblTokens;
-    @FXML
-    TableView<Identificador> TblID;
     @FXML
     TableView<Literal> TblLit;
 
@@ -205,6 +205,7 @@ public class MainController {
             Token token;
 
             TxtConsola.clear();
+            limpiarTblTab();
             sin.importarExcel("src/main/resources/compilador/Simbolos_MegaVerdaderos.txt");
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
 
@@ -217,7 +218,6 @@ public class MainController {
             }
 
             App.tbl_token.MostrarTokens(TblTokens);
-            App.tbl_id.MostrarIDs(TblID);
             App.tbl_lit.MostrarLits(TblLit);
             App.tbl_error.MostrarErrores(TxtConsola);
 
@@ -230,8 +230,12 @@ public class MainController {
             if (!sin.errores.isEmpty()) {
                 TxtSinRes.appendText("Analisis Sintactico Erroneo");
                 sin.errores.forEach(e -> TxtConsola.appendText("- " + e + "\n"));
-            } else
+            } else {
                 TxtSinRes.appendText("Analisis sintáctico completado correctamente");
+                AnalizadorDec anadec = new AnalizadorDec();
+                anadec.Analizar();
+                anadec.MostrarTbls(TabTbls);
+            }
 
         } else {
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada.");
@@ -341,6 +345,22 @@ public class MainController {
         if (!resultado.isPresent() || resultado.get().trim().isEmpty())
             return null;
         return resultado.get().trim();
+    }
+
+    private void limpiarTblTab() {
+        List<Tab> pest = new ArrayList<>();
+
+        for (Tab t : TabTbls.getTabs()) {
+            if (t.getText().equals("Tokens") || t.getText().equals("Literales") || t.getText().equals("Sintactico")) {
+                pest.add(t);
+            }
+        }
+
+        TabTbls.getTabs().clear();
+
+        for (Tab t : pest) {
+            TabTbls.getTabs().add(t);
+        }
     }
 
 }
