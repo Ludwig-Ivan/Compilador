@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import compilador.TablaID.Identificador;
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
 import javafx.beans.property.SimpleStringProperty;
@@ -214,7 +212,7 @@ public class MainController {
                 token = App.tbl_token.SiguienteToken();
                 if (token == null)
                     break;
-                // ban = sin.AnalizarToken(token);
+                ban = sin.AnalizarToken(token);
             }
 
             App.tbl_token.MostrarTokens(TblTokens);
@@ -227,7 +225,7 @@ public class MainController {
 
             // ? Si existe algun error, el analisis fue incorrecto, en caso contrario,
             // ? analisis correcto
-            if (!sin.errores.isEmpty()) {
+            if (!App.tbl_error.getErrores().isEmpty()) {
                 TxtSinRes.appendText("Analisis Sintactico Erroneo");
                 sin.errores.forEach(e -> TxtConsola.appendText("- " + e + "\n"));
             } else {

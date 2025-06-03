@@ -11,7 +11,7 @@ public class TablaError {
     private final List<Error> errores = new ArrayList<>();
 
     // Agregar un nuevo error
-    public void agregarError(String tipo, String lexema, int linea, int columna, String desc) {
+    public void agregarError(String tipo, String lexema, String linea, String columna, String desc) {
         errores.add(new Error(tipo, lexema, linea, columna, desc));
     }
 
@@ -40,11 +40,11 @@ public class TablaError {
     public static class Error {
         private final String tipo;
         private final String lexema;
-        private final int linea;
-        private final int columna;
+        private final String linea;
+        private final String columna;
         private final String desc;
 
-        public Error(String tipo, String lexema, int linea, int columna, String desc) {
+        public Error(String tipo, String lexema, String linea, String columna, String desc) {
             this.tipo = tipo;
             this.lexema = lexema;
             this.linea = linea;
@@ -64,18 +64,19 @@ public class TablaError {
             return lexema;
         }
 
-        public int getLinea() {
+        public String getLinea() {
             return linea;
         }
 
-        public int getColumna() {
+        public String getColumna() {
             return columna;
         }
 
         @Override
         public String toString() {
-            return String.format("Error [%s] en la linea %d, columna %d : %s (%s) \n", tipo, linea, columna, desc,
-                    lexema);
+            return String.format("Error [%s] en la linea %s, columna %s : %s ( %s ) \n", tipo, linea, columna,
+                    desc.contains("$") ? desc.replace("$", "<Fin de archivo>") : desc,
+                    lexema.equals("$") ? "Fin de archivo" : lexema);
         }
     }
 }

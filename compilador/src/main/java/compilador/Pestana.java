@@ -48,7 +48,7 @@ public class Pestana extends StackPane {
 
     private static final String[] KEYWORDS = new String[] {
             "if", "else", "while", "do", "return", "print", "int", "float", "char",
-            "cadena", "bool", "void", "true", "false", "break", "continue", "func", "main", "program"
+            "cadena", "bool", "void", "true", "false", "break", "continue", "func", "main", "program", "for", "read"
     };
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";

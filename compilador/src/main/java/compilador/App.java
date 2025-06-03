@@ -47,6 +47,7 @@ public class App extends Application {
         tbl_sim_res.put("read", "RESERVADA");
         tbl_sim_res.put("program", "RESERVADA");
         tbl_sim_res.put("func", "RESERVADA");
+        tbl_sim_res.put("for", "RESERVADA");
 
         // ? Simbolos
         // ? --> Simbolos Ordinarios

@@ -52,7 +52,7 @@ public class Lexico {
             manejarCaracterInvalido(actual);
         }
 
-        App.tbl_token.AgregarToken("$", 0, 0, "$");
+        App.tbl_token.AgregarToken("$", linea, columna, "$");
         App.tbl_token.ResetPos();
     }
 
@@ -109,7 +109,7 @@ public class Lexico {
                 App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
             }
         else
-            App.tbl_error.agregarError("LEXICO", palabra, linea, startColumna, "Identificador invalido.");
+            App.tbl_error.agregarError("LEXICO", palabra, linea + "", startColumna + "", "Identificador invalido.");
 
         return true;
     }
@@ -135,7 +135,7 @@ public class Lexico {
                 if (tienePunto) {
                     buffer.append(entrada.charAt(i++));
                     columna++;
-                    App.tbl_error.agregarError("LEXICO", buffer.toString(), linea, startColumna,
+                    App.tbl_error.agregarError("LEXICO", buffer.toString(), linea + "", startColumna + "",
                             "Formato de numero incorrecto.");
                     return true;
                 }
@@ -153,9 +153,9 @@ public class Lexico {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LDEC", numero, numero) + "");
         } else if (numero.endsWith(".") || numero.startsWith("."))
-            App.tbl_error.agregarError("LEXICO", null, linea, startColumna, "Numero incompleto");
+            App.tbl_error.agregarError("LEXICO", "", linea + "", startColumna + "", "Numero incompleto");
         else
-            App.tbl_error.agregarError("LEXICO", null, linea, startColumna, "Formato de numero incorrecto");
+            App.tbl_error.agregarError("LEXICO", "", linea + "", startColumna + "", "Formato de numero incorrecto");
 
         return true;
     }
@@ -191,7 +191,8 @@ public class Lexico {
         }
 
         if (i >= entrada.length() /* || entrada.charAt(i) == '\n' */) {
-            App.tbl_error.agregarError("LEXICO", "Fin de Archivo", startLinea, startColumna, "Cadeno no cerrada");
+            App.tbl_error.agregarError("LEXICO", "Fin de Archivo", startLinea + "", startColumna + "",
+                    "Cadeno no cerrada");
             // if (i < entrada.length() && entrada.charAt(i) == '\n') {
             // linea++;
             // columna = 1;
@@ -226,7 +227,7 @@ public class Lexico {
 
         // Verifica si hay al menos un carácter después de la comilla inicial
         if (i >= entrada.length()) {
-            App.tbl_error.agregarError("LEXICO", "Fin de Linea", linea, startColumna, "Caracter no cerrado");
+            App.tbl_error.agregarError("LEXICO", "Fin de Linea", linea + "", startColumna + "", "Caracter no cerrado");
             return true;
         }
 
@@ -237,7 +238,8 @@ public class Lexico {
 
         // Esperamos la comilla de cierre
         if (i >= entrada.length() || entrada.charAt(i) != '\'') {
-            App.tbl_error.agregarError("LEXICO", entrada.charAt(i) + "", linea, columna, "Caracter no cerrado");
+            App.tbl_error.agregarError("LEXICO", entrada.charAt(i) + "", linea + "", columna + "",
+                    "Caracter no cerrado");
             return true;
         }
 
@@ -250,7 +252,7 @@ public class Lexico {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LCAR", buffer.toString(), "\'" + buffer.toString() + "\'") + "");
         else
-            App.tbl_error.agregarError("LEXICO", "Mas de un caracter", linea, startColumna, "Char invalido");
+            App.tbl_error.agregarError("LEXICO", "Mas de un caracter", linea + "", startColumna + "", "Char invalido");
 
         return true;
     }
@@ -299,7 +301,8 @@ public class Lexico {
 
                 if (!cerrado) {
                     String comentarioNoCerrado = entrada.substring(startIndex);
-                    App.tbl_error.agregarError("LEXICO", comentarioNoCerrado, linea, columna, "Comentario no cerrado");
+                    App.tbl_error.agregarError("LEXICO", comentarioNoCerrado, linea + "", columna + "",
+                            "Comentario no cerrado");
                     i = entrada.length();
                 }
                 return true;
@@ -352,7 +355,7 @@ public class Lexico {
      * @return true / false
      */
     private void manejarCaracterInvalido(char actual) {
-        App.tbl_error.agregarError("LEXICO", actual + "", linea, columna++, "Caracter Invalido");
+        App.tbl_error.agregarError("LEXICO", actual + "", linea + "", (columna++) + "", "Caracter Invalido");
         i++;
     }
 

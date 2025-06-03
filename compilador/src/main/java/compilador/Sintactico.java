@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 
+import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
 
 public class Sintactico {
@@ -19,31 +20,58 @@ public class Sintactico {
     private Vector<String> term; // ? Lista de terminales
     public List<String> errores; // ? Almacena los errores
     public List<String> historial_pila;
-    private String tipo = "", lexema = "", linea = "", columna = "", cima = "";
-    private Map<String, String> descripciones = Map.ofEntries(
-            Map.entry("P", "< programa >"), Map.entry("D's", "< declaracion >"),
-            Map.entry("D", "< int, float, char, cadena, bool >"), Map.entry("LD", "< ID >"), Map.entry("LD'", "< , >"),
-            Map.entry("V", "< ID >"), Map.entry("V'", "< = >"), Map.entry("A's", "< asignacion >"),
-            Map.entry("A", "< ID >"), Map.entry("A'", "< =, -=, +=, *=, /=, ++, -- >"),
-            Map.entry("F's", " < funcion >"), Map.entry("F", "< func >"),
-            Map.entry("TR", "< int, float, char, cadena, bool, void >"), Map.entry("M", "< main >"),
-            Map.entry("Arg's", "< argumento >"), Map.entry("Larg's", "< , >"),
-            Map.entry("Arg", "< int, float, char, cadena, bool >"), Map.entry("B", "< { >"),
-            Map.entry("S's", "< sentencia >"),
-            Map.entry("S", "< declaracion, asignacion, condicional, ciclo, salto, llamada, print, read, unario"),
-            Map.entry("C", "< if >"), Map.entry("C'", "< else >"), Map.entry("C''", "< {, if >"),
-            Map.entry("W", "< while, do >"), Map.entry("J", "< break, continue, return >"),
-            Map.entry("RV", "< expresion >"), Map.entry("L", "< # >"), Map.entry("PR", "< print >"),
-            Map.entry("R", "< read >"), Map.entry("T", "< int, float, char, cadena, bool >"),
-            Map.entry("E", "< expresión >"), Map.entry("TN", "< ternario >"), Map.entry("TN'", "< ? >"),
-            Map.entry("L1", "< operador binaria >"), Map.entry("L1'", "< &&, || >"),
-            Map.entry("L2", "< operador relacional >"), Map.entry("L2'", "< ==, !=, <, >, <=, >= >"),
-            Map.entry("L3", "< aritmetica >"), Map.entry("L3'", "< +, - >"), Map.entry("T1", "< aritmetica >"),
-            Map.entry("T1'", "< *, /, % >"), Map.entry("F1", "< operacion unaria >"), Map.entry("P1", "< prefijo >"),
-            Map.entry("S1", "< subfijo >"),
-            Map.entry("F2", "< ID, numero, decimal, cadena, caracter, #, true, false, ( >"),
-            Map.entry("OU", "< -, ! >"), Map.entry("OU'", "< ++, -- >"),
-            Map.entry("default", "un elemento del lenguaje"));
+    private String tipo = "", ref = "", linea = "", columna = "", cima = "";
+    private Map<String, String> descripciones = new HashMap<>();
+
+    {
+        descripciones.put("P", "< programa >");
+        descripciones.put("D's", "< declaracion >");
+        descripciones.put("LD", "< ID >");
+        descripciones.put("LD'", "< , >");
+        descripciones.put("As", "< =, ; >");
+        descripciones.put("F's", "< funcion >");
+        descripciones.put("F", "< func >");
+        descripciones.put("TR", "< int bool float char cadena void >");
+        descripciones.put("Pm", "< int bool float char cadena void >");
+        descripciones.put("Pm'", " < , >");
+        descripciones.put("M", "< main >");
+        descripciones.put("S's", "< sentencia >");
+        descripciones.put("S", "< asignacion, condicional, ciclo, salto, llamada, print >");
+        descripciones.put("A", "< ID >");
+        descripciones.put("A'", "< = -= += *= /= >");
+        descripciones.put("C", "< if >");
+        descripciones.put("C'", "< else >");
+        descripciones.put("C''", "< {, if >");
+        descripciones.put("W", "< while, do, for >");
+        descripciones.put("FI", "< ID >");
+        descripciones.put("LFI", "< , >");
+        descripciones.put("FC", "< expresion >");
+        descripciones.put("FU", "< ID >");
+        descripciones.put("LFU", "< , >");
+        descripciones.put("J", "< break, continue, return >");
+        descripciones.put("RV", "< expresion >");
+        descripciones.put("L", "< # >");
+        descripciones.put("Ag", "< expresion >");
+        descripciones.put("Ag'", "< , >");
+        descripciones.put("PR", "< print >");
+        descripciones.put("R", "< read >");
+        descripciones.put("T", "< int, float, char, cadena, bool >");
+        descripciones.put("E", "< expresión >");
+        descripciones.put("E'", "< ? >");
+        descripciones.put("E1", "< expresion >");
+        descripciones.put("E1'", "< &&, || >");
+        descripciones.put("E2", "< expresion >");
+        descripciones.put("E2'", "< ==, !=, <, >, <=, >= >");
+        descripciones.put("E3", "< expresion >");
+        descripciones.put("E3'", "< +, - >");
+        descripciones.put("E4", "< expresion >");
+        descripciones.put("E4'", "< *, /, % >");
+        descripciones.put("E5", "< -, !, Factor >");
+        descripciones.put("FA", "< numero, decimal, caracter, llamada, true, false, ID, read >");
+        descripciones.put("OU", "< -, ! >");
+        descripciones.put("$", "< fin de cadena >");
+        descripciones.put("default", "un elemento del lenguaje");
+    }
 
     /**
      * Constructor para dar pie al analisis sintactico
@@ -68,16 +96,18 @@ public class Sintactico {
      *         de no poder analizar el token.
      */
     public boolean AnalizarToken(Token token) {
+
         historial_pila.add(pila + "");
         if (!extraerDatosToken(token))
             return false;
+
         cima = pila.peek();
 
         if (cima.equals("$"))
             return false;
 
         if (term.contains(cima))
-            return procesarTerminal();
+            return procesarTerminal(token);
 
         return expandirProduccion(token);
     }
@@ -91,7 +121,7 @@ public class Sintactico {
      */
     private boolean extraerDatosToken(Token token) {
         if (token == null) {
-            errores.add("Error: fin de entrada inesperado");
+            App.tbl_error.agregarError("SINTACTICO", "null", "", "", "Entrada Inesperada");
             return false;
         }
 
@@ -99,7 +129,7 @@ public class Sintactico {
         linea = elem[0];
         columna = elem[1];
         tipo = elem[2];
-        lexema = elem[3];
+        ref = elem[3];
 
         return true;
     }
@@ -112,14 +142,28 @@ public class Sintactico {
      * 
      * @return true | false
      */
-    private boolean procesarTerminal() {
-        if (cima.equals(tipo) || cima.equals(lexema))
+    private boolean procesarTerminal(Token token) {
+
+        if (tipo.equals("LITERAL") && ref.matches("[0-9]*")) { // Concuerdan para literales
+            Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
+            if (cima.equals(lit.getTipo())) {
+                pila.pop(); // Saco de la cima
+                return true; // Continuo al siguiente toquen
+            } else {
+                App.tbl_error.agregarError("SINTACTICO", pila.pop(), linea, columna,
+                        String.format("Se esperaba %s, se encontro", lit.getRep_text()));
+                return AnalizarToken(token);
+            }
+        }
+
+        if (cima.equals(tipo) || cima.equals(ref)) {
             pila.pop();
-        else
-            errores.add(String.format(
-                    "Error en la línea %s, columna %s: Se esperaba '%s', se encontró '%s'",
-                    linea, columna, pila.pop(), lexema));
-        return true;
+            return true;
+        } else {
+            App.tbl_error.agregarError("SINTACTICO", ref, linea, columna,
+                    String.format("Se esperaba %s, se encontro", pila.pop()));
+            return AnalizarToken(token);
+        }
     }
 
     /**
@@ -139,13 +183,26 @@ public class Sintactico {
 
         switch (sig_prod) {
             case "@":
-                // pila.pop(); // Épsilon: solo sacamos el no-terminal
-                return AnalizarToken(token); // Reprocesar el mismo token
+                return AnalizarToken(token); // Reprocesar el mismo token al siguiente elemento en la pila
             case "`":
-                App.tbl_error.agregarError("SINTACTICO", lexema, token.getLinea(), token.getColumna(), descripcion);
+                String ref = "?";
+                if (token.getTipo().equals("ID")) {
+                    ref = App.tbl_id.BuscarID(Integer.parseInt(token.getRef())).getNom();
+                } else if (token.getTipo().equals("LITERAL")) {
+                    ref = App.tbl_lit.BuscarID(Integer.parseInt(token.getRef())).getValor();
+                } else {
+                    ref = token.getRef();
+                }
+                App.tbl_error.agregarError("SINTACTICO", ref.replace("\n", "").replace(" ", ""),
+                        token.getLinea() + "",
+                        token.getColumna() + "",
+                        String.format("Se esperaba %s, se encontro", descripcion));
+                pila.push(prod_act);
                 return true; // Avanzar token
             case "\"\"\"\"":
-                App.tbl_error.agregarError("SINTACTICO", lexema, token.getLinea(), token.getColumna(), descripcion);
+                App.tbl_error.agregarError("SINTACTICO", token.getRef(), token.getLinea() + "",
+                        token.getColumna() + "",
+                        String.format("Se esperaba %s, se encontro", descripcion));
                 return AnalizarToken(token); // Reintentar con el mismo token
             default:
                 return true;
@@ -166,9 +223,8 @@ public class Sintactico {
         String prod_sig = tbl_ll.get(obtenerClaveProduccion(prod_act));
 
         if (prod_sig == null) {
-            errores.add(String.format(
-                    "Error en la línea %s, columna %s: No se encontró producción para <%s, %s>",
-                    linea, columna, prod_act, lexema));
+            App.tbl_error.agregarError("SINTACTICO", prod_act, linea, columna,
+                    String.format("No se encontró producción para <%s, %s>", prod_act, ref));
             return false;
         }
 
@@ -188,11 +244,16 @@ public class Sintactico {
      * @return Produccion siguiente en la tabla LL
      */
     private String obtenerClaveProduccion(String prod_act) {
-        if (tipo.equals("ID") || tipo.equals("NUMERO") || tipo.equals("DECIMAL") ||
-                tipo.equals("CADENA") || tipo.equals("CARACTER")) {
+        if (tipo.equals("ID")) {
             return String.format("%s,%s", prod_act, tipo);
         }
-        return String.format("%s,%s", prod_act, lexema);
+
+        if (tipo.equals("LITERAL")) {
+            Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
+            return String.format("%s,%s", prod_act, lit.getTipo());
+        }
+
+        return String.format("%s,%s", prod_act, ref);
     }
 
     /**

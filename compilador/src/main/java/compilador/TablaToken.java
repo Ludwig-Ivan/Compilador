@@ -119,7 +119,7 @@ public class TablaToken {
          */
         @Override
         public String toString() {
-            return String.format("%d~%d~%s~%s", linea, columna, tipo, ref);
+            return String.format("%d~%d~%s~%s", linea.get(), columna.get(), tipo.get(), ref.get());
         }
 
         public String getTipo() {
