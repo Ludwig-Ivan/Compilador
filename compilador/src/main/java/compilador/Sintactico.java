@@ -146,7 +146,7 @@ public class Sintactico {
 
         if (tipo.equals("LITERAL") && ref.matches("[0-9]*")) { // Concuerdan para literales
             Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
-            if (cima.equals(lit.getTipo())) {
+            if (cima.equals(lit.getComp())) {
                 pila.pop(); // Saco de la cima
                 return true; // Continuo al siguiente toquen
             } else {
@@ -168,7 +168,7 @@ public class Sintactico {
 
     /**
      * Metodo encargado de procesar las producciones especiales
-     * ("@" : Epsilon | "`" : Saltar | """" : Sacar)
+     * ("&" : Epsilon | "`" : Saltar | """" : Sacar)
      * Si es epsilon, saca el ultimo elemento de la pila, y vuelve a realizar el
      * analisis con el token actual.
      * Si es ` o """" saca el ultimo elemenmto de la pila, y manda un error
@@ -182,7 +182,7 @@ public class Sintactico {
         String descripcion = descripciones.getOrDefault(prod_act, prod_act);
 
         switch (sig_prod) {
-            case "@":
+            case "&":
                 return AnalizarToken(token); // Reprocesar el mismo token al siguiente elemento en la pila
             case "`":
                 String ref = "?";
@@ -228,7 +228,7 @@ public class Sintactico {
             return false;
         }
 
-        if (prod_sig.equals("@") || prod_sig.equals("`") || prod_sig.equals("\"\"\"\""))
+        if (prod_sig.equals("&") || prod_sig.equals("`") || prod_sig.equals("\"\"\"\""))
             return procesarProduccionEspecial(token, prod_sig, prod_act);
 
         colocarProduccionEnPila(prod_sig);
@@ -250,7 +250,7 @@ public class Sintactico {
 
         if (tipo.equals("LITERAL")) {
             Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
-            return String.format("%s,%s", prod_act, lit.getTipo());
+            return String.format("%s,%s", prod_act, lit.getComp());
         }
 
         return String.format("%s,%s", prod_act, ref);

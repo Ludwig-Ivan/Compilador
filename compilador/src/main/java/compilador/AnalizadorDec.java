@@ -23,8 +23,10 @@ public class AnalizadorDec {
                 case "program": // Creacion de la tabla de simbolos general
                     tkn = App.tbl_token.SiguienteToken();
                     if (tkn.getTipo().equals("ID")) {
+                        con++;
                         nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
                         tbl_manager.entrarScope(nombre);
+
                     } else {
                         System.out.println("Error al entrar al scope principal");
                     }
@@ -47,22 +49,29 @@ public class AnalizadorDec {
                 case "func":
                     tkn = App.tbl_token.SiguienteToken();
                     if (tkn.getTipo().equals("ID")) {
+                        con++;
                         nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
                         tbl_manager.insertarID("IDF", "", "", nombre, "");
                         tbl_manager.entrarScope(nombre);
+
                     } else {
                         System.out.println("Error al entrar al scope principal");
                     }
                     break;
 
-                case "main":
-                    tbl_manager.insertarID("main", "", "", "main", "");
-                    tbl_manager.entrarScope("main");
+                case "procedure":
+                    tkn = App.tbl_token.SiguienteToken();
+                    if (tkn.getTipo().equals("ID")) {
+                        con++;
+                        nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
+                        tbl_manager.insertarID("IDP", "", "", nombre, "");
+                        tbl_manager.entrarScope(nombre);
+
+                    } else {
+                        System.out.println("Error al entrar al scope principal");
+                    }
                     break;
 
-                case "{":
-                    con++;
-                    break;
                 case "}":
                     con--;
                     if (con == 1) {

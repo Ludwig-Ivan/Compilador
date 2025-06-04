@@ -38,15 +38,14 @@ public class App extends Application {
         tbl_sim_res.put("char", "RESERVADA");
         tbl_sim_res.put("cadena", "RESERVADA");
         tbl_sim_res.put("bool", "RESERVADA");
-        tbl_sim_res.put("void", "RESERVADA");
         tbl_sim_res.put("true", "RESERVADA");
         tbl_sim_res.put("false", "RESERVADA");
         tbl_sim_res.put("break", "RESERVADA");
         tbl_sim_res.put("continue", "RESERVADA");
-        tbl_sim_res.put("main", "RESERVADA");
         tbl_sim_res.put("read", "RESERVADA");
         tbl_sim_res.put("program", "RESERVADA");
         tbl_sim_res.put("func", "RESERVADA");
+        tbl_sim_res.put("procedure", "RESERVADA");
         tbl_sim_res.put("for", "RESERVADA");
 
         // ? Simbolos
@@ -57,11 +56,12 @@ public class App extends Application {
         tbl_sim_res.put(")", "SIMBOLO");
         tbl_sim_res.put("{", "SIMBOLO");
         tbl_sim_res.put("}", "SIMBOLO");
-        tbl_sim_res.put("[", "SIMBOLO");
-        tbl_sim_res.put("]", "SIMBOLO");
+        // tbl_sim_res.put("[", "SIMBOLO");
+        // tbl_sim_res.put("]", "SIMBOLO");
         tbl_sim_res.put("?", "SIMBOLO");
         tbl_sim_res.put(":", "SIMBOLO");
         tbl_sim_res.put("#", "SIMBOLO");
+        tbl_sim_res.put("@", "SIMBOLO");
         // ? --> Operadores
         tbl_sim_res.put("+", "SIMBOLO");
         tbl_sim_res.put("-", "SIMBOLO");
