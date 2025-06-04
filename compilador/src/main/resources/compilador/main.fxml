@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.MainController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="800.0" styleClass="root" stylesheets="@java-keywords.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.MainController">
    <top>
       <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -50,7 +50,7 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Recientes">
+                    <MenuItem fx:id="MenuItemRecientes" mnemonicParsing="false" text="Recientes">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -210,17 +210,18 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Window">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Nueva ventana">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/browser.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
+                    <MenuItem fx:id="MenuItemNuevaVentana" mnemonicParsing="false" onAction="#AccionBtnNuevaVentana" text="Nueva ventana">
+                        <graphic>
+                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../icons/browser.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </MenuItem>
                     <Menu mnemonicParsing="false" text="Editor">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Zoom +">
+                        <MenuItem fx:id="MenuItemZoomIn" mnemonicParsing="false" onAction="#AccionBtnZoomIn" text="Zoom +">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -247,22 +248,10 @@
                     </Menu>
                     <Menu mnemonicParsing="false" text="Apariencia">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Esconder toolbar">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/tools.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Full Screen">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/expand.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></MenuItem>
+                        <MenuItem fx:id="MenuItemModoOscuro" mnemonicParsing="false" onAction="#AccionBtnModoOscuro" text="Modo oscuro">
+                        </MenuItem>
+                        <MenuItem fx:id="MenuItemModoClaro" mnemonicParsing="false" onAction="#AccionBtnModoClaro" text="Modo claro">
+                        </MenuItem>
                       </items>
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -351,12 +340,15 @@
       </VBox>
    </top>
    <center>
-      <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+      <SplitPane fx:id="root" dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
           <SplitPane dividerPositions="0.16555183946488294, 0.7792642140468228" prefHeight="160.0" prefWidth="200.0">
-            <items>
-              <TreeView prefHeight="200.0" prefWidth="200.0" />
-              <TabPane fx:id="TabEditor" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" />
+         <items>
+              <TreeView prefHeight="200.0" prefWidth="200.0" style="-fx-background-image: &quot;@/images/FDP.jpg&quot;;" />
+              <TabPane fx:id="TabEditor" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-size: cover;" styleClass="root" tabClosingPolicy="ALL_TABS">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets></TabPane>
               <TabPane fx:id="TabTbls" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                 <tabs>
                   <Tab text="Tokens">
@@ -388,17 +380,17 @@
                   </Tab>
                 </tabs>
               </TabPane>
-            </items>
-          </SplitPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
-               <children>
-                <TextArea fx:id="TxtConsola" prefHeight="107.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-               </children>
-            </AnchorPane>
-        </items>
-        <BorderPane.margin>
-          <Insets />
-        </BorderPane.margin>
+         </items>
+      </SplitPane>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <TextArea fx:id="TxtConsola" prefHeight="107.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+         </children>
+      </AnchorPane>
+      </items>
+      <BorderPane.margin>
+         <Insets />
+      </BorderPane.margin>
       </SplitPane>
    </center>
 </BorderPane>

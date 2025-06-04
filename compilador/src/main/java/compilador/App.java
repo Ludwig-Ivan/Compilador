@@ -97,12 +97,12 @@ public class App extends Application {
     @SuppressWarnings("exports")
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("main"), 800, 485); // Especificar dimensiones explícitas
+        scene = new Scene(loadFXML("main"), 1025, 485); // Especificar dimensiones explícitas
         scene.getStylesheets().add(App.class.getResource("java-keywords.css").toExternalForm()); // Corregir ruta del
                                                                                                  // CSS
         stage.setTitle("Compilador -> from Ludwig, Sergio y Leo");
         stage.setScene(scene);
-        stage.setMinWidth(800);
+        stage.setMinWidth(1025);
         stage.setMinHeight(500);
         stage.show();
     }
