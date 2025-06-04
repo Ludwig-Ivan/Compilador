@@ -204,7 +204,7 @@ public class MainController {
 
             TxtConsola.clear();
             limpiarTblTab();
-            sin.importarExcel("src/main/resources/compilador/Simbolos_MegaVerdaderos.txt");
+            sin.importarExcel("C:\\Users\\Sergio\\Documents\\Tecnologico\\6to semestre\\Lenguajes y Automatas I\\Automatas - Compilador\\Compilador\\compilador\\src\\main\\resources\\compilador\\Simbolos_MegaVerdaderos.txt");
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
 
             // ? Control de seguimiento para analisis de tokens
