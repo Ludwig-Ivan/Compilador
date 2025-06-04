@@ -9,14 +9,12 @@ import java.util.Optional;
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -24,9 +22,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -52,15 +47,18 @@ public class MainController {
     @FXML
     private void AccionMISalir() {
     }
-/*     //valor zoom
-    @FXML
-    private MenuItem zoomInMenuItem;
-
-    private final double ZOOM_STEP = 2.0;
-
-    @FXML
-    private void initialize() {
-    } */
+    /*
+     * //valor zoom
+     * 
+     * @FXML
+     * private MenuItem zoomInMenuItem;
+     * 
+     * private final double ZOOM_STEP = 2.0;
+     * 
+     * @FXML
+     * private void initialize() {
+     * }
+     */
 
     /**
      * 
@@ -108,13 +106,15 @@ public class MainController {
         }
     }
 
-    // Permite crear una ventana adicional, es funcional, pero para esto tuve que agregar el main.fxml a la carpeta compilador
+    // Permite crear una ventana adicional, es funcional, pero para esto tuve que
+    // agregar el main.fxml a la carpeta compilador
     // lo reparare para despues
 
     @FXML
     public void AccionBtnNuevaVentana() {
         try {
-            // Verifica que el archivo FXML esté en el mismo paquete que esta clase en la carpeta resources
+            // Verifica que el archivo FXML esté en el mismo paquete que esta clase en la
+            // carpeta resources
             URL fxmlLocation = MainController.class.getResource("main.fxml");
             if (fxmlLocation == null) {
                 throw new IOException("FXML no encontrado en /com/ejemplo/ventanaSecundaria.fxml");
@@ -139,7 +139,7 @@ public class MainController {
         }
     }
 
-    //Modo oscuro
+    // Modo oscuro
 
     @FXML
     private Parent root; // Puede ser AnchorPane, BorderPane, etc. con fx:id="root"
@@ -151,15 +151,13 @@ public class MainController {
         }
     }
 
-private void AccionBtnModoOscuro2(Node node) {
+    private void AccionBtnModoOscuro2(Node node) {
         try {
-            if (node instanceof Region && !(node instanceof MenuBar))
-            {
-                ((Region) node).setStyle("-fx-background-color: #cccccc; -fx-border-color: black; -fx-border-width: 0.1;");
-            }   
-        }
-        catch(Exception e)
-        {
+            if (node instanceof Region && !(node instanceof MenuBar)) {
+                ((Region) node)
+                        .setStyle("-fx-background-color: #cccccc; -fx-border-color: black; -fx-border-width: 0.1;");
+            }
+        } catch (Exception e) {
             System.out.println("Error");
         }
 
@@ -179,13 +177,11 @@ private void AccionBtnModoOscuro2(Node node) {
 
     private void AccionBtnModoClaro2(Node node) {
         try {
-            if (node instanceof Region && !(node instanceof MenuBar))
-            {
-                ((Region) node).setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.1;");
-            }   
-        }
-        catch(Exception e)
-        {
+            if (node instanceof Region && !(node instanceof MenuBar)) {
+                ((Region) node)
+                        .setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.1;");
+            }
+        } catch (Exception e) {
             System.out.println("Error");
         }
 
@@ -196,35 +192,38 @@ private void AccionBtnModoOscuro2(Node node) {
         }
     }
 
-    //Hacer zoom in
+    // Hacer zoom in
     @FXML
     private void AccionBtnZoomIn() {
-/*         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
-        if (tab != null) {
-            System.out.println("Entra");
-            Node content = tab.getContent();
-            TextArea textArea = findTextArea(content);
-            if (textArea != null) {
-                double currentSize = textArea.getFont().getSize();
-                textArea.setStyle("-fx-font-size: " + (currentSize + ZOOM_STEP) + "px;");
-            }
-        } */
+        /*
+         * Tab tab = TabEditor.getSelectionModel().getSelectedItem();
+         * if (tab != null) {
+         * System.out.println("Entra");
+         * Node content = tab.getContent();
+         * TextArea textArea = findTextArea(content);
+         * if (textArea != null) {
+         * double currentSize = textArea.getFont().getSize();
+         * textArea.setStyle("-fx-font-size: " + (currentSize + ZOOM_STEP) + "px;");
+         * }
+         * }
+         */
     }
 
-/*     private TextArea findTextArea(Node node) {
-        if (node instanceof TextArea) {
-            return (TextArea) node;
-        } else if (node instanceof Pane) {
-            for (Node child : ((Pane) node).getChildrenUnmodifiable()) {
-                TextArea result = findTextArea(child);
-                if (result != null) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    } */
-
+    /*
+     * private TextArea findTextArea(Node node) {
+     * if (node instanceof TextArea) {
+     * return (TextArea) node;
+     * } else if (node instanceof Pane) {
+     * for (Node child : ((Pane) node).getChildrenUnmodifiable()) {
+     * TextArea result = findTextArea(child);
+     * if (result != null) {
+     * return result;
+     * }
+     * }
+     * }
+     * return null;
+     * }
+     */
 
     /**
      * Metodo de accion para boton abrir de la tool-bar.
@@ -304,7 +303,7 @@ private void AccionBtnModoOscuro2(Node node) {
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada para guardar.");
 
     }
-    
+
     /**
      * Metodo de accion para el boton de la tool-bar encargado de inicializar el
      * analisis lexico-sintactico.
@@ -342,7 +341,8 @@ private void AccionBtnModoOscuro2(Node node) {
 
             TxtConsola.clear();
             limpiarTblTab();
-            sin.importarExcel("C:\\Users\\Sergio\\Documents\\Tecnologico\\6to semestre\\Lenguajes y Automatas I\\Automatas - Compilador\\Compilador\\compilador\\src\\main\\resources\\compilador\\Simbolos_MegaVerdaderos.txt");
+            sin.importarExcel(
+                    "src\\main\\resources\\compilador\\Simbolos_MegaVerdaderos.txt");
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
 
             // ? Control de seguimiento para analisis de tokens
