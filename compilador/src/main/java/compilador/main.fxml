@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="800.0" styleClass="root" stylesheets="@java-keywords.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.MainController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="800.0" fx:id="root" stylesheets="@java-keywords.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.MainController">
    <top>
       <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -82,7 +82,7 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
-                    <MenuItem fx:id="MISalir" mnemonicParsing="false" onAction="#AccionMISalir" text="Salir">
+                    <MenuItem mnemonicParsing="false" text="Salir">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -221,7 +221,7 @@
                      </MenuItem>
                     <Menu mnemonicParsing="false" text="Editor">
                       <items>
-                        <MenuItem fx:id="MenuItemZoomIn" mnemonicParsing="false" onAction="#AccionBtnZoomIn" text="Zoom +">
+                        <MenuItem mnemonicParsing="false" text="Zoom +">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -248,9 +248,9 @@
                     </Menu>
                     <Menu mnemonicParsing="false" text="Apariencia">
                       <items>
-                        <MenuItem fx:id="MenuItemModoOscuro" mnemonicParsing="false" onAction="#AccionBtnModoOscuro" text="Modo oscuro">
+                        <MenuItem mnemonicParsing="false" text="Modo oscuro">
                         </MenuItem>
-                        <MenuItem fx:id="MenuItemModoClaro" mnemonicParsing="false" onAction="#AccionBtnModoClaro" text="Modo claro">
+                        <MenuItem mnemonicParsing="false" text="Modo claro">
                         </MenuItem>
                       </items>
                            <graphic>
@@ -340,7 +340,7 @@
       </VBox>
    </top>
    <center>
-      <SplitPane fx:id="root" dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
           <SplitPane dividerPositions="0.16555183946488294, 0.7792642140468228" prefHeight="160.0" prefWidth="200.0">
          <items>
@@ -349,7 +349,7 @@
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets></TabPane>
-              <TabPane fx:id="TabTbls" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                 <tabs>
                   <Tab text="Tokens">
                     <content>
@@ -365,6 +365,15 @@
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <TableView fx:id="TblLit" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="ID's">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="TblID" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                  </children>
                               </AnchorPane>
                            </content>
