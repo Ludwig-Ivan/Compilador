@@ -24,6 +24,7 @@ public class App extends Application {
     public static TablaLit tbl_lit;
     public static TablaError tbl_error;
     public static HashMap<String, String> tbl_sim_res;
+    public static String cad_cod = "";
 
     // ? Inicializador de Instancia de la clase
     {
@@ -65,25 +66,25 @@ public class App extends Application {
         tbl_sim_res.put("#", "SIMBOLO");
         tbl_sim_res.put("@", "SIMBOLO");
         // ? --> Operadores
-        tbl_sim_res.put("+", "SIMBOLO");
-        tbl_sim_res.put("-", "SIMBOLO");
-        tbl_sim_res.put("*", "SIMBOLO");
-        tbl_sim_res.put("/", "SIMBOLO");
-        tbl_sim_res.put("%", "SIMBOLO");
-        tbl_sim_res.put("=", "SIMBOLO");
-        tbl_sim_res.put("+=", "SIMBOLO");
-        tbl_sim_res.put("-=", "SIMBOLO");
-        tbl_sim_res.put("*=", "SIMBOLO");
-        tbl_sim_res.put("/=", "SIMBOLO");
-        tbl_sim_res.put("==", "SIMBOLO");
-        tbl_sim_res.put("!=", "SIMBOLO");
-        tbl_sim_res.put("<", "SIMBOLO");
-        tbl_sim_res.put(">", "SIMBOLO");
-        tbl_sim_res.put("<=", "SIMBOLO");
-        tbl_sim_res.put(">=", "SIMBOLO");
-        tbl_sim_res.put("&&", "SIMBOLO");
-        tbl_sim_res.put("||", "SIMBOLO");
-        tbl_sim_res.put("!", "SIMBOLO");
+        tbl_sim_res.put("+", "OP_ARITMETICO");
+        tbl_sim_res.put("-", "OP_ARITMETICO");
+        tbl_sim_res.put("*", "OP_ARITMETICO");
+        tbl_sim_res.put("/", "OP_ARITMETICO");
+        tbl_sim_res.put("%", "OP_ARITMETICO");
+        tbl_sim_res.put("=", "OP_ASIGNACION");
+        tbl_sim_res.put("+=", "OP_ASIGNACION");
+        tbl_sim_res.put("-=", "OP_ASIGNACION");
+        tbl_sim_res.put("*=", "OP_ASIGNACION");
+        tbl_sim_res.put("/=", "OP_ASIGNACION");
+        tbl_sim_res.put("==", "OP_RELACIONAL");
+        tbl_sim_res.put("!=", "OP_RELACIONAL");
+        tbl_sim_res.put("<", "OP_RELACIONAL");
+        tbl_sim_res.put(">", "OP_RELACIONAL");
+        tbl_sim_res.put("<=", "OP_RELACIONAL");
+        tbl_sim_res.put(">=", "OP_RELACIONAL");
+        tbl_sim_res.put("&&", "OP_LOGICO");
+        tbl_sim_res.put("||", "OP_LOGICO");
+        tbl_sim_res.put("!", "OP_LOGICO");
     }
 
     // TODO: agregar mas configuraciones iniciales

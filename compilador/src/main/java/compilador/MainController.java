@@ -46,7 +46,7 @@ public class MainController {
     @FXML
     private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar, MISalir, MIRutas;
     @FXML
-    private TextArea TxtSinRes, TxtConsola;
+    private TextArea TxtSinRes, TxtConsola, TxtPseudo;
     @FXML
     TableView<Token> TblTokens;
     @FXML
@@ -142,7 +142,7 @@ public class MainController {
         directoryChooser.setTitle("Selecciona una carpeta");
         File arc = directoryChooser.showDialog(ToolBarBtnAbrir.getParent().getScene().getWindow());
         App.rutaProyecto = arc.getAbsolutePath();
-        // ArbolProyecto arb = new ArbolProyecto(arc.getAbsolutePath(), TVArc);
+        ArbolProyecto arb = new ArbolProyecto(arc.getAbsolutePath(), TVArc);
     }
 
     @FXML
@@ -383,6 +383,7 @@ public class MainController {
             limpiarTblTab();
             sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
+            TxtPseudo.setText(App.cad_cod);
 
             // ? Control de seguimiento para analisis de tokens
             while (ban) {
@@ -542,7 +543,9 @@ public class MainController {
         List<Tab> pest = new ArrayList<>();
 
         for (Tab t : TabTbls.getTabs()) {
-            if (t.getText().equals("Tokens") || t.getText().equals("Literales") || t.getText().equals("Sintactico")) {
+            if (t.getText().equals("Componentes") || t.getText().equals("Pseudocodigo")
+                    || t.getText().equals("Literales")
+                    || t.getText().equals("Sintactico")) {
                 pest.add(t);
             }
         }

@@ -50,6 +50,9 @@ public class Lexico {
                 continue;
 
             manejarCaracterInvalido(actual);
+
+            // ? Llamada de sintactico
+
         }
 
         App.tbl_token.AgregarToken("$", linea, columna, "$");
@@ -70,11 +73,13 @@ public class Lexico {
             linea++;
             columna = 1;
             i++;
+            App.cad_cod += "\n";
             return true;
         }
         if (Validator.esEspacio(actual)) {
             columna++;
             i++;
+            App.cad_cod += " ";
             return true;
         }
         return false;
@@ -105,8 +110,10 @@ public class Lexico {
         if (palabra.matches("[a-zA-Z_][a-zA-Z0-9_]*"))
             if (App.tbl_sim_res.containsKey(palabra)) {
                 App.tbl_token.AgregarToken(App.tbl_sim_res.get(palabra), linea, startColumna, palabra);
+                App.cad_cod += palabra;
             } else {
                 App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+                App.cad_cod += "ID";
             }
         else
             App.tbl_error.agregarError("LEXICO", palabra, linea + "", startColumna + "", "Identificador invalido.");
@@ -149,9 +156,11 @@ public class Lexico {
         if (numero.matches("\\d+")) {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LNUM", numero, numero, "int") + "");
+            App.cad_cod += "LNUM";
         } else if (numero.matches("\\d+\\.\\d+")) {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LDEC", numero, numero, "float") + "");
+            App.cad_cod += "LDEC";
         } else if (numero.endsWith(".") || numero.startsWith("."))
             App.tbl_error.agregarError("LEXICO", "", linea + "", startColumna + "", "Numero incompleto");
         else
@@ -206,6 +215,7 @@ public class Lexico {
 
         App.tbl_token.AgregarToken("LITERAL", startLinea, startColumna,
                 App.tbl_lit.AgregarLit("LCAD", buffer.toString(), "\"" + buffer.toString() + "\"", "cadena") + "");
+        App.cad_cod += "LCAD";
         return true;
     }
 
@@ -248,10 +258,11 @@ public class Lexico {
         columna++;
 
         // Validar que sea un único carácter (ya validado implícitamente)
-        if (buffer.length() == 1)
+        if (buffer.length() == 1) {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LCAR", buffer.toString(), "\'" + buffer.toString() + "\'", "char") + "");
-        else
+            App.cad_cod += "LCAR";
+        } else
             App.tbl_error.agregarError("LEXICO", "Mas de un caracter", linea + "", startColumna + "", "Char invalido");
 
         return true;
@@ -325,6 +336,7 @@ public class Lexico {
         String doble = "" + entrada.charAt(i) + entrada.charAt(i + 1);
         if (App.tbl_sim_res.containsKey(doble)) {
             App.tbl_token.AgregarToken(App.tbl_sim_res.get(doble), linea, columna, doble);
+            App.cad_cod += doble;
             i += 2;
             columna += 2;
             return true;
@@ -342,6 +354,7 @@ public class Lexico {
         String single = String.valueOf(actual);
         if (App.tbl_sim_res.containsKey(single)) {
             App.tbl_token.AgregarToken(App.tbl_sim_res.get(single), linea, columna++, single);
+            App.cad_cod += single;
             i++;
             return true;
         }
