@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
-
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
 
@@ -19,7 +18,6 @@ public class Sintactico {
     private Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
     private HashMap<String, String> tbl_ll = new HashMap<>(); // ? estructura que reguarda la tabla LL
     private Vector<String> term; // ? Lista de terminales
-    public List<String> errores; // ? Almacena los errores
     public List<String> historial_pila;
     private String tipo = "", ref = "", linea = "", columna = "", cima = "";
     private Map<String, String> descripciones = new HashMap<>();
@@ -73,7 +71,6 @@ public class Sintactico {
     public Sintactico(String sim_ini) {
         pila.push("$");
         pila.push(sim_ini != null ? sim_ini : "P");
-        errores = new ArrayList<>();
         historial_pila = new ArrayList<String>();
     }
 
