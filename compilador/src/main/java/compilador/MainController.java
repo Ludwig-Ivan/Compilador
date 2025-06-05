@@ -26,6 +26,9 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -115,6 +118,20 @@ public class MainController {
                     }
                 }
             });
+
+            Scene scene = ToolBarBtnAbrir.getScene();
+
+            scene.getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.CONTROL_DOWN),
+                    () -> this.AccionBtnZoomIn());
+
+            scene.getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN),
+                    () -> this.AccionBtnZoomOut());
+
+            scene.getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
+                    () -> this.AccionToolBarBtnGuardar());
         });
 
     }
@@ -226,7 +243,7 @@ public class MainController {
     }
 
     @FXML
-    private void AccionBtnZoomIn() {
+    public void AccionBtnZoomIn() {
         List<Tab> tabs = TabEditor.getTabs();
         App.fontSize += 2;
         for (Tab tab : tabs) {
@@ -237,7 +254,7 @@ public class MainController {
     }
 
     @FXML
-    private void AccionBtnZoomOut() {
+    public void AccionBtnZoomOut() {
         List<Tab> tabs = TabEditor.getTabs();
         App.fontSize -= 2;
         for (Tab tab : tabs) {
@@ -308,7 +325,7 @@ public class MainController {
      *           En caso de no tener una pestana seleccionada, mandara una alerta.
      */
     @FXML
-    private void AccionToolBarBtnGuardar() {
+    public void AccionToolBarBtnGuardar() {
         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
         if (tab != null && tab.getContent() instanceof Pestana) {
             Pestana pest_act = (Pestana) tab.getContent();
@@ -387,7 +404,7 @@ public class MainController {
             // ? analisis correcto
             if (!App.tbl_error.getErrores().isEmpty()) {
                 TxtSinRes.appendText("Analisis Sintactico Erroneo");
-                sin.errores.forEach(e -> TxtConsola.appendText("- " + e + "\n"));
+
             } else {
                 TxtSinRes.appendText("Analisis sintáctico completado correctamente");
                 AnalizadorDec anadec = new AnalizadorDec();
