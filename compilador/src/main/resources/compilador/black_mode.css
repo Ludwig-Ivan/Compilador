@@ -1,0 +1,199 @@
+/* Base para toda la aplicación */
+.root {
+    -fx-base: #121212;
+    -fx-background-color: #121212;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Labels y texto */
+.label {
+    -fx-text-fill: #e0e0e0;
+}
+
+/* Botones */
+.button {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.button:hover {
+    -fx-background-color: #3c3c3c;
+}
+
+/* TextField y TextArea */
+.text-field,
+.text-area {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #e0e0e0;
+    -fx-background-color: #1e1e1e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4;
+    -fx-border-color: #333;
+    -fx-border-radius: 4;
+}
+
+.text-area .content {
+    -fx-background-color: #1e1e1e;
+}
+
+/* ComboBox */
+.combo-box,
+.combo-box-base {
+    -fx-background-color: #1e1e1e;
+    -fx-mark-color: #ffffff;
+    -fx-border-color: #444;
+    -fx-text-fill: #ffffff;
+}
+
+/* ChoiceBox */
+.choice-box {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #ffffff;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #2a2a2a;
+}
+
+/* TableView */
+.table-view {
+    -fx-base: #1e1e1e;
+    -fx-background-color: #1e1e1e;
+    -fx-table-cell-border-color: #2e2e2e;
+    -fx-text-background-color: #e0e0e0;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #2a2a2a;
+}
+
+/* TreeView */
+.tree-view {
+    -fx-background-color: #1a1a1a;
+    -fx-cell-hover-color: #333;
+}
+
+.tree-cell {
+    -fx-text-fill: #e0e0e0;
+    -fx-background-color: transparent;
+}
+
+.tree-cell:filled:selected {
+    -fx-background-color: #333;
+    -fx-text-fill: #ffffff;
+}
+
+/* TabPane */
+.tab-pane {
+    -fx-background-color: #1e1e1e;
+    -fx-tab-min-width: 80px;
+}
+
+.tab {
+    -fx-background-color: #2a2a2a;
+    -fx-text-base-color: #f0f0f0;
+}
+
+.tab:selected {
+    -fx-background-color: #333;
+}
+
+/* Scrollbars */
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #444;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #1e1e1e;
+}
+
+/* MenuBar */
+.menu-bar {
+    -fx-background-color: #202020;
+    -fx-text-fill: #ffffff;
+}
+
+.menu,
+.menu-item {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:focused {
+    -fx-background-color: #3c3c3c;
+}
+
+/* Tooltips */
+.tooltip {
+    -fx-background-color: #333;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #555;
+}
+
+/* CodeArea u otros */
+.code-area,
+.styled-text-area,
+.generic-styled-area {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #ffffff;
+    -fx-highlight-fill: #555555;
+    -fx-highlight-text-fill: #ffffff;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 12pt;
+}
+
+/* ProgressBar y ProgressIndicator */
+.progress-bar,
+.progress-indicator {
+    -fx-accent: #2196f3;
+}
+
+/* Accents */
+.accent-blue {
+    -fx-background-color: #2196f3;
+}
+
+.accent-green {
+    -fx-background-color: #4caf50;
+}
+
+.accent-red {
+    -fx-background-color: #f44336;
+}
+
+.line-number {
+    -fx-text-fill: #888888;
+    -fx-font-size: 10pt;
+    -fx-background-color: #1e1e1e;
+}
+
+.split-pane {
+    -fx-background-color: #2b2b2b;
+}

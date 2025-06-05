@@ -45,7 +45,7 @@ public class TablaLit {
         TableColumn<Literal, String> columnRepText = new TableColumn<>("Representacion Textual");
         columnRepText.setCellValueFactory(new PropertyValueFactory<>("rep_text"));
         TableColumn<Literal, String> columnTipo = new TableColumn<>("Tipo");
-        columnRepText.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        columnTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 
         tabla.getColumns().addAll(columnComp, columnValor, columnRepText, columnTipo);
 

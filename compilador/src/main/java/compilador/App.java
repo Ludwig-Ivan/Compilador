@@ -6,15 +6,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
+
+import org.json.JSONObject;
 
 public class App extends Application {
 
     private static Scene scene;
-    // TODO: Analizar el manejo de archivos y pestanas
     public static Vector<Archivo> archivos = new Vector<>(); // ? Vector para el manejo de archivos
-    public static Vector<Pestana> pestanas = new Vector<>(); // ? Vector para el manejo de pestanas
 
     // ? Elementos Globales del Compilador
     public static TablaToken tbl_token;
@@ -86,8 +88,14 @@ public class App extends Application {
 
     // TODO: agregar mas configuraciones iniciales
     // Hola como estas
-    public static int fontSizeGlobal = 12; // ? Configuracion inicial de fuente establecida en la App
+    public static int fontSize = 12; // ? Configuracion inicial de fuente establecida en la App
     public static String rutaProyecto = "";
+    public static String mode = "white";
+    public static List<String> recentfiles;
+    public static final String darkModeCss = App.class.getResource("/compilador/black_mode.css").toExternalForm();
+    public static final String lightModeCss = App.class.getResource("/compilador/java-keywords.css").toExternalForm();
+    public static final String darkKeywordsCss = App.class.getResource("/compilador/java-keywords-black-mode.css")
+            .toExternalForm();
 
     /**
      * Metodo para inicializar la escena principal
@@ -97,14 +105,57 @@ public class App extends Application {
     @SuppressWarnings("exports")
     @Override
     public void start(Stage stage) throws IOException {
+
+        stage.setOnCloseRequest(event -> {
+            updateConfig();
+        });
+
+        cargarConfig();
+
         scene = new Scene(loadFXML("main"), 1025, 485); // Especificar dimensiones explícitas
-        scene.getStylesheets().add(App.class.getResource("java-keywords.css").toExternalForm()); // Corregir ruta del
-                                                                                                 // CSS
         stage.setTitle("Compilador -> from Ludwig, Sergio y Leo");
         stage.setScene(scene);
         stage.setMinWidth(1025);
         stage.setMinHeight(500);
         stage.show();
+
+    }
+
+    private void cargarConfig() {
+        Archivo arc = new Archivo("C:/Apps/Compilador/config.json");
+
+        if (!arc.Existe()) {
+            arc = new Archivo("C:/Apps/Compilador", "config", ".json");
+            JSONObject obj = new JSONObject();
+            obj.put("configAutor", "Compilator");
+            obj.put("fontSize", 12);
+            obj.put("rutaProyect", "");
+            obj.put("mode", "white");
+            obj.put("recentfiles", new ArrayList<>());
+            arc.write(obj.toString());
+        }
+
+        if (arc.Existe()) {
+            String jsonString = arc.toString();
+            JSONObject obj = new JSONObject(jsonString);
+
+            fontSize = obj.getInt("fontSize");
+            rutaProyecto = obj.getString("rutaProyect");
+            mode = obj.getString("mode");
+            recentfiles = (List) obj.getJSONArray("recentfiles").toList();
+        }
+    }
+
+    public static void updateConfig() {
+        Archivo arc = new Archivo("C:/Apps/Compilador/config.json");
+        if (arc.Existe()) {
+            JSONObject obj = new JSONObject(arc.toString());
+            obj.put("fontSize", fontSize);
+            obj.put("rutaProyect", rutaProyecto);
+            obj.put("mode", mode);
+            obj.put("recentfiles", recentfiles);
+            arc.write(obj.toString());
+        }
     }
 
     /**
@@ -124,7 +175,9 @@ public class App extends Application {
      * @return el elemento cargado (Parent) de la vista fxml
      */
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml")); // Corregir ruta del FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml")); // Corregir
+                                                                                       // ruta del
+                                                                                       // FXML
         return fxmlLoader.load();
     }
 

@@ -42,19 +42,20 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
+                        <Menu fx:id="MenuItemRecientes" mnemonicParsing="false" text="Recientes">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/rotation.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Menu>
                     <MenuItem fx:id="MenuItemGuardar" mnemonicParsing="false" onAction="#AccionToolBarBtnGuardar" text="Guardar">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../icons/film.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem fx:id="MenuItemRecientes" mnemonicParsing="false" text="Recientes">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/rotation.png" />
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
@@ -82,7 +83,7 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Salir">
+                    <MenuItem mnemonicParsing="false" onAction="#AccionMISalir" text="Salir">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -221,7 +222,7 @@
                      </MenuItem>
                     <Menu mnemonicParsing="false" text="Editor">
                       <items>
-                        <MenuItem mnemonicParsing="false" text="Zoom +">
+                        <MenuItem mnemonicParsing="false" onAction="#AccionBtnZoomIn" text="Zoom +">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -229,7 +230,7 @@
                                        </image>
                                     </ImageView>
                                  </graphic></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Zoom -">
+                        <MenuItem mnemonicParsing="false" onAction="#AccionBtnZoomOut" text="Zoom -">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -279,7 +280,7 @@
                                        </image>
                                     </ImageView>
                                  </graphic></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Rutas">
+                        <MenuItem mnemonicParsing="false" onAction="#AccionMIRutas" text="Rutas">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -344,8 +345,8 @@
         <items>
           <SplitPane dividerPositions="0.16555183946488294, 0.7792642140468228" prefHeight="160.0" prefWidth="200.0">
          <items>
-              <TreeView prefHeight="200.0" prefWidth="200.0" />
-              <TabPane fx:id="TabEditor" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-size: cover;" styleClass="root" tabClosingPolicy="ALL_TABS">
+              <TreeView fx:id="TVArc" prefHeight="200.0" prefWidth="200.0" />
+              <TabPane fx:id="TabEditor" prefHeight="200.0" prefWidth="200.0" styleClass="root" tabClosingPolicy="ALL_TABS">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets></TabPane>

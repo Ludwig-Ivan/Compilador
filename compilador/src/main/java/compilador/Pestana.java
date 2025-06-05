@@ -17,6 +17,7 @@ import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.collection.ListModification;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -87,7 +88,11 @@ public class Pestana extends StackPane {
         this.ruta = n;
         codeArea = new CodeArea();
         codeArea.setEditable(true);
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.setParagraphGraphicFactory(line -> {
+            Node graphic = LineNumberFactory.get(codeArea).apply(line);
+            graphic.getStyleClass().add("line-number");
+            return graphic;
+        });
         codeArea.setContextMenu(new DefaultContextMenu());
 
         codeArea.textProperty().addListener((obs, oldText, newText) -> {
@@ -229,4 +234,9 @@ public class Pestana extends StackPane {
             codeArea.setStyleSpans(0, styles);
         });
     }
+
+    public void setFontSize(int fontsize) {
+        codeArea.setStyle(String.format("-fx-font-size: %dpx;", fontsize));
+    }
+
 }

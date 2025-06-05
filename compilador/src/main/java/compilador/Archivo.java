@@ -34,6 +34,10 @@ public class Archivo {
 		return ruta;
 	}
 
+	public boolean Existe() {
+		return Files.exists(ruta);
+	}
+
 	/**
 	 * Constructor que recibe la ruta, nombre de archivo y extension para la
 	 * creacion de un nuevo archivo.
