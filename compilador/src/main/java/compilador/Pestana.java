@@ -223,4 +223,9 @@ public class Pestana extends StackPane {
             codeArea.setStyleSpans(0, styles);
         });
     }
+
+    public String getSelectedText() {
+    return codeArea.getSelectedText();  // Suponiendo que usas un TextArea llamado textArea
+}
+
 }

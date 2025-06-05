@@ -94,22 +94,6 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Regresar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/fast-backward.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Seguir">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/fast-forward.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
                     <MenuItem mnemonicParsing="false" text="Cortar">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -178,7 +162,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Source">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Formatear">
+                    <MenuItem fx:id="MenuItemFormatear" mnemonicParsing="false" onAction="#AccionBtnFormatear" text="Formatear">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -186,23 +170,11 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Refactor">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Renombrar...">
+                    <MenuItem fx:id="MenuItemRenombrar" mnemonicParsing="false" onAction="#AccionBtnRenombrar" text="Renombrar...">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../icons/text-box-edit.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Mover...">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/arrows.png" />
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
@@ -257,41 +229,6 @@
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../icons/paint.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                    </Menu>
-                    <Menu mnemonicParsing="false" text="Preferencias">
-                      <items>
-                        <MenuItem mnemonicParsing="false" text="Temas">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/background.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Fuentes y Letras">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/font.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Rutas">
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/code-fork.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic></MenuItem>
-                      </items>
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/preference.png" />
                                  </image>
                               </ImageView>
                            </graphic>

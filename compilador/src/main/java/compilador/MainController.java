@@ -6,6 +6,8 @@ import java.util.List;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
 import javafx.beans.property.SimpleStringProperty;
@@ -196,35 +198,62 @@ private void AccionBtnModoOscuro2(Node node) {
         }
     }
 
+    //Dar formato al texto
+    @FXML
+    private void AccionBtnFormatear() {
+        Tab tab = TabEditor.getSelectionModel().getSelectedItem();
+        if (tab != null && tab.getContent() instanceof Pestana) {
+            Pestana pest_act = (Pestana) tab.getContent();
+            String content = pest_act.getText();
+
+            String[] lines = content.split("\\r?\\n");
+            StringBuilder formatted = new StringBuilder();
+            int indentLevel = 0;
+
+            for (String line : lines) {
+                String trimmed = line.trim();
+
+                if (trimmed.startsWith("}")) {
+                    indentLevel = Math.max(0, indentLevel - 1);
+                }
+
+                for (int i = 0; i < indentLevel; i++) {
+                    formatted.append("\t");
+                }
+                formatted.append(trimmed).append("\n");
+
+                if (trimmed.endsWith("{")) {
+                    indentLevel++;
+                }
+            }
+
+            pest_act.setText(formatted.toString());
+        }
+    }
+
+    //Cambiar el nombre de una variable
+    @FXML
+    private void AccionBtnRenombrar() {
+        Tab tab = TabEditor.getSelectionModel().getSelectedItem();
+        if (tab != null && tab.getContent() instanceof Pestana) {
+            String palabraOriginal, palabraNueva;
+            palabraOriginal = mostrarInputDialog("Escribe el nombre del id a cambiar el nombre:", null, "Escribe el nombre del id a cambiar el nombre:");
+            palabraNueva = mostrarInputDialog("Escribe el nuevo nombre del id:", null, "Escribe el nuevo nombre del id:");
+            Pestana pest_act = (Pestana) tab.getContent();
+            String content = pest_act.getText();
+
+            String contenidoModificado = content.replaceAll("\\b" + Pattern.quote(palabraOriginal) + "\\b", palabraNueva);
+
+
+            pest_act.setText(contenidoModificado);
+        }
+    }
+
     //Hacer zoom in
     @FXML
     private void AccionBtnZoomIn() {
-/*         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
-        if (tab != null) {
-            System.out.println("Entra");
-            Node content = tab.getContent();
-            TextArea textArea = findTextArea(content);
-            if (textArea != null) {
-                double currentSize = textArea.getFont().getSize();
-                textArea.setStyle("-fx-font-size: " + (currentSize + ZOOM_STEP) + "px;");
-            }
-        } */
+
     }
-
-/*     private TextArea findTextArea(Node node) {
-        if (node instanceof TextArea) {
-            return (TextArea) node;
-        } else if (node instanceof Pane) {
-            for (Node child : ((Pane) node).getChildrenUnmodifiable()) {
-                TextArea result = findTextArea(child);
-                if (result != null) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    } */
-
 
     /**
      * Metodo de accion para boton abrir de la tool-bar.
@@ -302,7 +331,6 @@ private void AccionBtnModoOscuro2(Node node) {
             });
         } else
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada para guardar.");
-
     }
     
     /**
