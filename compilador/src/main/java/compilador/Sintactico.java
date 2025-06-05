@@ -1,8 +1,9 @@
 package compilador;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,32 +30,22 @@ public class Sintactico {
         descripciones.put("LD", "< ID >");
         descripciones.put("LD'", "< , >");
         descripciones.put("As", "< =, ; >");
-        descripciones.put("F's", "< funcion >");
-        descripciones.put("F", "< func >");
-        descripciones.put("TR", "< int bool float char cadena void >");
-        descripciones.put("Pm", "< int bool float char cadena void >");
+        descripciones.put("F's", "< func, procedure >");
+        descripciones.put("Pm", "< int bool float char cadena >");
         descripciones.put("Pm'", " < , >");
-        descripciones.put("M", "< main >");
         descripciones.put("S's", "< sentencia >");
-        descripciones.put("S", "< asignacion, condicional, ciclo, salto, llamada, print >");
-        descripciones.put("A", "< ID >");
+        descripciones.put("S", "< asignacion, condicional, ciclo, salto, lfunc, lproced print >");
         descripciones.put("A'", "< = -= += *= /= >");
-        descripciones.put("C", "< if >");
         descripciones.put("C'", "< else >");
         descripciones.put("C''", "< {, if >");
-        descripciones.put("W", "< while, do, for >");
         descripciones.put("FI", "< ID >");
         descripciones.put("LFI", "< , >");
         descripciones.put("FC", "< expresion >");
         descripciones.put("FU", "< ID >");
         descripciones.put("LFU", "< , >");
-        descripciones.put("J", "< break, continue, return >");
         descripciones.put("RV", "< expresion >");
-        descripciones.put("L", "< # >");
         descripciones.put("Ag", "< expresion >");
         descripciones.put("Ag'", "< , >");
-        descripciones.put("PR", "< print >");
-        descripciones.put("R", "< read >");
         descripciones.put("T", "< int, float, char, cadena, bool >");
         descripciones.put("E", "< expresión >");
         descripciones.put("E'", "< ? >");
@@ -146,7 +137,7 @@ public class Sintactico {
 
         if (tipo.equals("LITERAL") && ref.matches("[0-9]*")) { // Concuerdan para literales
             Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
-            if (cima.equals(lit.getTipo())) {
+            if (cima.equals(lit.getComp())) {
                 pila.pop(); // Saco de la cima
                 return true; // Continuo al siguiente toquen
             } else {
@@ -168,7 +159,7 @@ public class Sintactico {
 
     /**
      * Metodo encargado de procesar las producciones especiales
-     * ("@" : Epsilon | "`" : Saltar | """" : Sacar)
+     * ("&" : Epsilon | "`" : Saltar | """" : Sacar)
      * Si es epsilon, saca el ultimo elemento de la pila, y vuelve a realizar el
      * analisis con el token actual.
      * Si es ` o """" saca el ultimo elemenmto de la pila, y manda un error
@@ -182,7 +173,7 @@ public class Sintactico {
         String descripcion = descripciones.getOrDefault(prod_act, prod_act);
 
         switch (sig_prod) {
-            case "@":
+            case "&":
                 return AnalizarToken(token); // Reprocesar el mismo token al siguiente elemento en la pila
             case "`":
                 String ref = "?";
@@ -228,7 +219,7 @@ public class Sintactico {
             return false;
         }
 
-        if (prod_sig.equals("@") || prod_sig.equals("`") || prod_sig.equals("\"\"\"\""))
+        if (prod_sig.equals("&") || prod_sig.equals("`") || prod_sig.equals("\"\"\"\""))
             return procesarProduccionEspecial(token, prod_sig, prod_act);
 
         colocarProduccionEnPila(prod_sig);
@@ -250,7 +241,7 @@ public class Sintactico {
 
         if (tipo.equals("LITERAL")) {
             Literal lit = App.tbl_lit.BuscarID(Integer.parseInt(ref));
-            return String.format("%s,%s", prod_act, lit.getTipo());
+            return String.format("%s,%s", prod_act, lit.getComp());
         }
 
         return String.format("%s,%s", prod_act, ref);
@@ -289,8 +280,8 @@ public class Sintactico {
      * 
      * @param ruta
      */
-    public void importarExcel(String ruta) {
-        try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
+    public void importarExcel(InputStream input) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(input))) {
             String line = br.readLine();
             term = new Vector<>();
 

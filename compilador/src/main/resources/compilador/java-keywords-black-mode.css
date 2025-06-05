@@ -1,0 +1,69 @@
+.code-area {
+    -fx-background-color: #1e1e1e;
+    -fx-font-size: 14px;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-text-fill: white;
+}
+
+.keyword {
+    -fx-fill: #c792ea;
+    /* lavanda brillante */
+    -fx-font-weight: bold;
+}
+
+.semicolon {
+    -fx-font-weight: bold;
+}
+
+.paren {
+    -fx-fill: #ff5370;
+    /* rojo coral */
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    -fx-fill: #c3e88d;
+    /* verde lima suave */
+    -fx-font-weight: bold;
+}
+
+.brace {
+    -fx-fill: #89ddff;
+    /* celeste pastel */
+    -fx-font-weight: bold;
+}
+
+.string {
+    -fx-fill: #f78c6c;
+    /* naranja suave */
+}
+
+.comment {
+    -fx-fill: #616161;
+    /* gris para comentarios */
+    -fx-font-style: italic;
+}
+
+.char {
+    -fx-fill: #f78c6c;
+}
+
+.operator {
+    -fx-fill: #ffcb6b;
+    /* dorado pastel */
+}
+
+.number {
+    -fx-fill: #ffd700;
+    /* amarillo brillante */
+}
+
+.identifier {
+    -fx-font-weight: bold;
+    -fx-fill: #ffffff;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #3c3f41;
+    /* gris oscuro */
+}

@@ -17,6 +17,7 @@ import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.collection.ListModification;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -48,7 +49,8 @@ public class Pestana extends StackPane {
 
     private static final String[] KEYWORDS = new String[] {
             "if", "else", "while", "do", "return", "print", "int", "float", "char",
-            "cadena", "bool", "void", "true", "false", "break", "continue", "func", "main", "program", "for", "read"
+            "cadena", "bool", "procedure", "true", "false", "break", "continue", "func", "main", "program", "for",
+            "read"
     };
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
@@ -59,17 +61,18 @@ public class Pestana extends StackPane {
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
     private static final String SEMICOLON_PATTERN = "\\;";
-    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
-    private static final String CHAR_PATTERN = "'([^'\\\\]|\\\\.)'";
+    private static final String STRING_PATTERN = "\"([^\"]|\\.)*\"|\"([^\"]|\\.)*";
+    private static final String CHAR_PATTERN = "'([^'\\\\]|\\\\.)'|'([^'\\\\]|\\\\.)";
     private static final String COMMENT_PATTERN = "//[^\n]*" + // Comentario de línea
-            "|" + "/\\*(?:.|\\R)*?\\*/" + // Comentario de bloque válido
-            "|" + "/\\*(?:.|\\R)*";
+            "|" + "(?s)/\\*.*?\\*/" + // Comentario de bloque válido
+            "|" + "/\\*.*";
     // TODO : Revisar este patron Error
     // private static final String ERROR_PATTERN =
     // "[^\\s\\w\"';,(){}\\[\\]+\\-*/%=<>!&|?:]";
 
     private static final Pattern PATTERN = Pattern.compile(
             "(?<COMMENT>" + COMMENT_PATTERN + ")"
+                    + "|(?<STRING>" + STRING_PATTERN + ")"
                     + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
                     + "|(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")"
                     + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
@@ -78,7 +81,6 @@ public class Pestana extends StackPane {
                     + "|(?<BRACE>" + BRACE_PATTERN + ")"
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
                     + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
-                    + "|(?<STRING>" + STRING_PATTERN + ")"
                     + "|(?<CHAR>" + CHAR_PATTERN + ")");
     // + "|(?<ERROR>" + ERROR_PATTERN + ")");
 
@@ -86,8 +88,17 @@ public class Pestana extends StackPane {
         this.ruta = n;
         codeArea = new CodeArea();
         codeArea.setEditable(true);
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.setParagraphGraphicFactory(line -> {
+            Node graphic = LineNumberFactory.get(codeArea).apply(line);
+            graphic.getStyleClass().add("line-number");
+            return graphic;
+        });
         codeArea.setContextMenu(new DefaultContextMenu());
+
+        codeArea.textProperty().addListener((obs, oldText, newText) -> {
+            codeArea.getVisibleParagraphs().addModificationObserver(
+                    new VisibleParagraphStyler<>(codeArea, this::computeHighlighting));
+        });
 
         codeArea.getVisibleParagraphs().addModificationObserver(
                 new VisibleParagraphStyler<>(codeArea, this::computeHighlighting));

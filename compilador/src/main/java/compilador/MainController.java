@@ -10,87 +10,154 @@ import java.util.regex.Pattern;
 
 import compilador.TablaLit.Literal;
 import compilador.TablaToken.Token;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import javafx.scene.layout.Region;
 
 public class MainController {
 
+    @FXML
+    private Menu MenuItemRecientes;
     @FXML
     private TabPane TabEditor, TabTbls;
     @FXML
     private Button ToolBarBtnAbrir, ToolBarBtnNuevo, ToolBarBtnGuardar, ToolBarBtnAnalizar;
     @FXML
-    private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar, MISalir;
+    private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar, MISalir, MIRutas;
     @FXML
     private TextArea TxtSinRes, TxtConsola;
     @FXML
     TableView<Token> TblTokens;
     @FXML
     TableView<Literal> TblLit;
+    @FXML
+    TreeView<File> TVArc;
+    @FXML
+    private Parent root; // Puede ser AnchorPane, BorderPane, etc. con fx:id="root"
+
+    @FXML
+    public void initialize() {
+        // ArbolProyecto arb = new ArbolProyecto(App.rutaProyecto, TVArc);
+        Platform.runLater(() -> {
+            if (App.mode.equals("white")) {
+                AccionBtnModoClaro();
+            } else {
+                AccionBtnModoOscuro();
+            }
+            updateMenuItemRecent();
+
+            TVArc.setCellFactory(tv -> new TreeCell<>() {
+                @Override
+                protected void updateItem(File item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(item.getName().isEmpty() ? item.getPath() : item.getName());
+
+                        // 🔑 Recupera el graphic del TreeItem actual
+                        TreeItem<File> treeItem = getTreeItem();
+                        if (treeItem != null) {
+                            setGraphic(treeItem.getGraphic());
+                        }
+                    }
+                }
+            });
+
+            ArbolProyecto ap = new ArbolProyecto(App.rutaProyecto, TVArc);
+
+            TVArc.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    TreeItem<File> itemSeleccionado = TVArc.getSelectionModel().getSelectedItem();
+
+                    if (itemSeleccionado != null) {
+                        File archivo = itemSeleccionado.getValue();
+                        if (archivo.isFile() && archivo.getName().endsWith(".lcl")) {
+                            // 🧠 Aquí defines lo que debe hacer: abrir en el editor, etc.
+                            System.out.println("Abrir archivo: " + archivo.getAbsolutePath());
+
+                            // Por ejemplo:
+                            Archivo arc;
+                            if (archivo.exists()) {
+                                for (Archivo a : App.archivos)
+                                    if (a.getRuta().toString().equals(archivo.getAbsolutePath())) {
+                                        mostrarAlerta("Advertencia", "El archivo ya está abierto en otra pestaña.");
+                                        return;
+                                    }
+
+                                arc = new Archivo(archivo.getAbsolutePath());
+                                App.archivos.add(arc);
+                                agregarPestana(arc);
+                                addRecentFile(arc.getRuta().toString());
+                                System.out.println("Pestaña abierta para: " + arc.getRuta());
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    }
+
+    @FXML
+    private void AccionMIRutas() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Selecciona una carpeta");
+        File arc = directoryChooser.showDialog(ToolBarBtnAbrir.getParent().getScene().getWindow());
+        App.rutaProyecto = arc.getAbsolutePath();
+        // ArbolProyecto arb = new ArbolProyecto(arc.getAbsolutePath(), TVArc);
+    }
 
     @FXML
     private void AccionMISalir() {
+        App.updateConfig();
+        Platform.exit();
+        System.exit(0);
     }
-/*     //valor zoom
-    @FXML
-    private MenuItem zoomInMenuItem;
 
-    private final double ZOOM_STEP = 2.0;
-
-    @FXML
-    private void initialize() {
-    } */
-
-    /**
-     * 
-     * @implSpec
-     *           Obtiene el stage donde se mostraran las ventanas emergentes.
-     * @implSpec
-     *           Obtiene la ruta donde se guardara el nuevo archivo.
-     * @implSpec
-     *           Obtiene el nombre que se le asignara al archivo en el formato
-     *           deseado.
-     * @implSpec
-     *           Crea el archivo, lo agrega al contenedor de pestanas.
-     * @implSpec
-     *           Y lo agrega a la lista de los archivos abiertos actualmente.
-     */
     @FXML
     private void AccionToolBarBtnNuevo() {
         try {
             String nombre, ruta;
             Archivo arc;
-            Stage stage = (Stage) TabEditor.getScene().getWindow(); // ? obtiene la ventana principal
+            Stage stage = (Stage) TabEditor.getScene().getWindow();
 
             if (stage == null) {
                 mostrarAlerta("Error", "No se pudo obtener la ventana principal.");
                 return;
             }
 
-            ruta = seleccionarDir(stage);
+            if (App.rutaProyecto.isBlank()) {
+                ruta = seleccionarDir(stage);
+            } else {
+                if (new File(App.rutaProyecto).exists())
+                    ruta = App.rutaProyecto;
+                else
+                    ruta = seleccionarDir(stage);
+            }
+
             System.out.println("Directorio seleccionado: " + ruta);
             nombre = mostrarInputDialog("Escribe nombre de archivo", null, "Escribe el nombre del archivo");
 
@@ -100,6 +167,7 @@ public class MainController {
                 arc = new Archivo(ruta, nombre, "");
                 App.archivos.add(arc);
                 agregarPestana(arc);
+                addRecentFile(ruta);
             } else
                 mostrarAlerta("Error", "Nombre de archivo no proporcionado");
 
@@ -110,13 +178,11 @@ public class MainController {
         }
     }
 
-    // Permite crear una ventana adicional, es funcional, pero para esto tuve que agregar el main.fxml a la carpeta compilador
-    // lo reparare para despues
-
     @FXML
     public void AccionBtnNuevaVentana() {
         try {
-            // Verifica que el archivo FXML esté en el mismo paquete que esta clase en la carpeta resources
+            // Verifica que el archivo FXML esté en el mismo paquete que esta clase en la
+            // carpeta resources
             URL fxmlLocation = MainController.class.getResource("main.fxml");
             if (fxmlLocation == null) {
                 throw new IOException("FXML no encontrado en /com/ejemplo/ventanaSecundaria.fxml");
@@ -141,60 +207,34 @@ public class MainController {
         }
     }
 
-    //Modo oscuro
-
-    @FXML
-    private Parent root; // Puede ser AnchorPane, BorderPane, etc. con fx:id="root"
-
     @FXML
     private void AccionBtnModoOscuro() {
-        if (root != null) {
-            AccionBtnModoOscuro2(root);
-        }
-    }
+        App.mode = "black";
+        Scene scene = ToolBarBtnAbrir.getScene();
 
-private void AccionBtnModoOscuro2(Node node) {
-        try {
-            if (node instanceof Region && !(node instanceof MenuBar))
-            {
-                ((Region) node).setStyle("-fx-background-color: #cccccc; -fx-border-color: black; -fx-border-width: 0.1;");
-            }   
-        }
-        catch(Exception e)
-        {
-            System.out.println("Error");
-        }
+        scene.getStylesheets().removeAll(App.lightModeCss, App.darkModeCss, App.darkKeywordsCss);
+        scene.getStylesheets().add(App.darkModeCss);
+        scene.getStylesheets().add(App.darkKeywordsCss);
 
-        if (node instanceof Parent) {
-            for (Node child : ((Parent) node).getChildrenUnmodifiable()) {
-                AccionBtnModoOscuro2(child);
-            }
-        }
     }
 
     @FXML
     private void AccionBtnModoClaro() {
-        if (root != null) {
-            AccionBtnModoClaro2(root);
-        }
+        Scene scene = ToolBarBtnAbrir.getScene();
+
+        scene.getStylesheets().removeAll(App.lightModeCss, App.darkModeCss, App.darkKeywordsCss);
+        scene.getStylesheets().add(App.lightModeCss);
+        App.mode = "white";
     }
 
-    private void AccionBtnModoClaro2(Node node) {
-        try {
-            if (node instanceof Region && !(node instanceof MenuBar))
-            {
-                ((Region) node).setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0.1;");
-            }   
-        }
-        catch(Exception e)
-        {
-            System.out.println("Error");
-        }
-
-        if (node instanceof Parent) {
-            for (Node child : ((Parent) node).getChildrenUnmodifiable()) {
-                AccionBtnModoClaro2(child);
-            }
+    @FXML
+    private void AccionBtnZoomIn() {
+        List<Tab> tabs = TabEditor.getTabs();
+        App.fontSize += 2;
+        for (Tab tab : tabs) {
+            Node content = tab.getContent();
+            Pestana pest = (Pestana) content;
+            pest.setFontSize(App.fontSize);
         }
     }
 
@@ -249,10 +289,15 @@ private void AccionBtnModoOscuro2(Node node) {
         }
     }
 
-    //Hacer zoom in
     @FXML
-    private void AccionBtnZoomIn() {
-
+    private void AccionBtnZoomOut() {
+        List<Tab> tabs = TabEditor.getTabs();
+        App.fontSize -= 2;
+        for (Tab tab : tabs) {
+            Node content = tab.getContent();
+            Pestana pest = (Pestana) content;
+            pest.setFontSize(App.fontSize);
+        }
     }
 
     /**
@@ -287,6 +332,7 @@ private void AccionBtnModoOscuro2(Node node) {
                     arc = new Archivo(ruta);
                     App.archivos.add(arc);
                     agregarPestana(arc);
+                    addRecentFile(ruta);
                     System.out.println("Pestaña abierta para: " + arc.getRuta());
                 }
             }
@@ -332,7 +378,7 @@ private void AccionBtnModoOscuro2(Node node) {
         } else
             mostrarAlerta("Advertencia", "No hay ninguna pestaña seleccionada para guardar.");
     }
-    
+
     /**
      * Metodo de accion para el boton de la tool-bar encargado de inicializar el
      * analisis lexico-sintactico.
@@ -370,7 +416,7 @@ private void AccionBtnModoOscuro2(Node node) {
 
             TxtConsola.clear();
             limpiarTblTab();
-            sin.importarExcel("C:\\Users\\Sergio\\Documents\\Tecnologico\\6to semestre\\Lenguajes y Automatas I\\Automatas - Compilador\\Compilador\\compilador\\src\\main\\resources\\compilador\\Simbolos_MegaVerdaderos.txt");
+            sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
 
             // ? Control de seguimiento para analisis de tokens
@@ -434,6 +480,10 @@ private void AccionBtnModoOscuro2(Node node) {
         fileChooser.setTitle("Seleccione un archivo");
         fileChooser.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("Archivos de texto", ext != null ? ext : "*.txt"));
+        if (!App.rutaProyecto.isBlank()) {
+            fileChooser.setInitialDirectory(new File(App.rutaProyecto));
+        }
+
         File res = fileChooser.showOpenDialog(stage);
         return res != null ? res.getAbsolutePath().trim() : null;
     }
@@ -463,9 +513,21 @@ private void AccionBtnModoOscuro2(Node node) {
 
             if (contenido != null)
                 pestana.setText(contenido);
-
-            App.pestanas.add(pestana);
+            pestana.setFontSize(App.fontSize);
             tab = new Tab(arc.getRuta().getFileName().toString(), pestana);
+
+            tab.setOnClosed((e) -> {
+                Pestana pest = (Pestana) tab.getContent();
+                Archivo at = null;
+                for (Archivo a : App.archivos) {
+                    if (a.getRuta().toAbsolutePath().toString().equals(pest.getRuta())) {
+                        at = a;
+                        break;
+                    }
+                }
+                App.archivos.remove(at);
+            });
+
             TabEditor.getTabs().add(tab);
             TabEditor.getSelectionModel().select(tab);
             System.out.println("Pestaña agregada exitosamente: " + arc.getRuta().getFileName());
@@ -527,6 +589,48 @@ private void AccionBtnModoOscuro2(Node node) {
         }
     }
 
+    private void addRecentFile(String ruta) {
+        if (App.recentfiles.contains(ruta)) {
+            App.recentfiles.remove(App.recentfiles.indexOf(ruta));
+            App.recentfiles.add(ruta);
+        } else {
+            if (App.recentfiles.size() >= 10) {
+                App.recentfiles.remove(0);
+                App.recentfiles.add(ruta);
+            } else {
+                App.recentfiles.add(ruta);
+            }
+        }
+        updateMenuItemRecent();
+    }
+
+    private void updateMenuItemRecent() {
+        MenuItemRecientes.getItems().clear();
+
+        for (int con = App.recentfiles.size() - 1; con >= 0; con--) {
+            File file = new File(App.recentfiles.get(con));
+            String fileName = file.getName();
+            MenuItem item = new MenuItem(fileName);
+            item.setOnAction(event -> {
+                Archivo arc;
+                if (file.exists()) {
+                    for (Archivo a : App.archivos)
+                        if (a.getRuta().toString().equals(file.getAbsolutePath())) {
+                            mostrarAlerta("Advertencia", "El archivo ya está abierto en otra pestaña.");
+                            return;
+                        }
+
+                    arc = new Archivo(file.getAbsolutePath());
+                    App.archivos.add(arc);
+                    agregarPestana(arc);
+                    updateMenuItemRecent();
+                    System.out.println("Pestaña abierta para: " + arc.getRuta());
+                }
+            });
+
+            MenuItemRecientes.getItems().add(item);
+        }
+    }
 }
 
 class Componente {
