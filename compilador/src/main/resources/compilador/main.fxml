@@ -59,103 +59,11 @@
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Cerrar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/close.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Cerrar todos">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/pin2.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Guardar como">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/calendar2.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
                     <MenuItem mnemonicParsing="false" onAction="#AccionMISalir" text="Salir">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../icons/pin3.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Cortar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/scissors.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Copiar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/files.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Pegar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/paste.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Eliminar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/trash.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Seleccionar todo">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/square-dashed.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Encontrar y remplazar">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/replace.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Encontrar siguiente">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/search.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Encontrar anterior">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/search%20(1).png" />
                                  </image>
                               </ImageView>
                            </graphic></MenuItem>
@@ -234,6 +142,15 @@
                               </ImageView>
                            </graphic>
                     </Menu>
+                        <MenuItem fx:id="MIRutas" mnemonicParsing="false" onAction="#AccionMIRutas" text="Ruta">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/browser.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
                   </items>
                 </Menu>
               </menus>

@@ -198,6 +198,7 @@ public class MainController {
                 App.archivos.add(arc);
                 agregarPestana(arc);
                 addRecentFile(ruta);
+                ArbolProyecto arb = new ArbolProyecto(App.rutaProyecto, TVArc);
             } else
                 mostrarAlerta("Error", "Nombre de archivo no proporcionado");
 
@@ -268,7 +269,7 @@ public class MainController {
         }
     }
 
-    //Dar formato al texto
+    // Dar formato al texto
     @FXML
     private void AccionBtnFormatear() {
         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
@@ -301,19 +302,21 @@ public class MainController {
         }
     }
 
-    //Cambiar el nombre de una variable
+    // Cambiar el nombre de una variable
     @FXML
     private void AccionBtnRenombrar() {
         Tab tab = TabEditor.getSelectionModel().getSelectedItem();
         if (tab != null && tab.getContent() instanceof Pestana) {
             String palabraOriginal, palabraNueva;
-            palabraOriginal = mostrarInputDialog("Escribe el nombre del id a cambiar el nombre:", null, "Escribe el nombre del id a cambiar el nombre:");
-            palabraNueva = mostrarInputDialog("Escribe el nuevo nombre del id:", null, "Escribe el nuevo nombre del id:");
+            palabraOriginal = mostrarInputDialog("Escribe el nombre del id a cambiar el nombre:", null,
+                    "Escribe el nombre del id a cambiar el nombre:");
+            palabraNueva = mostrarInputDialog("Escribe el nuevo nombre del id:", null,
+                    "Escribe el nuevo nombre del id:");
             Pestana pest_act = (Pestana) tab.getContent();
             String content = pest_act.getText();
 
-            String contenidoModificado = content.replaceAll("\\b" + Pattern.quote(palabraOriginal) + "\\b", palabraNueva);
-
+            String contenidoModificado = content.replaceAll("\\b" + Pattern.quote(palabraOriginal) + "\\b",
+                    palabraNueva);
 
             pest_act.setText(contenidoModificado);
         }
