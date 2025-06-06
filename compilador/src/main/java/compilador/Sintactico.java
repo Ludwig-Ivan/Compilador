@@ -15,7 +15,7 @@ import compilador.TablaToken.Token;
 
 public class Sintactico {
 
-    private Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
+    public Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
     private HashMap<String, String> tbl_ll = new HashMap<>(); // ? estructura que reguarda la tabla LL
     private Vector<String> term; // ? Lista de terminales
     public List<String> historial_pila;
@@ -84,7 +84,6 @@ public class Sintactico {
      *         de no poder analizar el token.
      */
     public boolean AnalizarToken(Token token) {
-
         historial_pila.add(pila + "");
         if (!extraerDatosToken(token))
             return false;
@@ -308,4 +307,5 @@ public class Sintactico {
             System.out.println("Error al importar la tbl: " + e);
         }
     }
+
 }

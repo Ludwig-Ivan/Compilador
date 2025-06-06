@@ -375,23 +375,13 @@ public class MainController {
             Pestana pestana = (Pestana) tab.getContent();
             String entrada = pestana.getText();
             Lexico lex = new Lexico();
-            Sintactico sin = new Sintactico("P");
-            boolean ban = true;
-            Token token;
+            App.sin = new Sintactico("P");
 
             TxtConsola.clear();
             limpiarTblTab();
-            sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
+            App.sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
             TxtPseudo.setText(App.cad_cod);
-
-            // ? Control de seguimiento para analisis de tokens
-            while (ban) {
-                token = App.tbl_token.SiguienteToken();
-                if (token == null)
-                    break;
-                ban = sin.AnalizarToken(token);
-            }
 
             App.tbl_token.MostrarTokens(TblTokens);
             App.tbl_lit.MostrarLits(TblLit);
@@ -399,7 +389,7 @@ public class MainController {
 
             TxtSinRes.clear();
             TxtSinRes.appendText("Pila:\n");
-            sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
+            App.sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
 
             // ? Si existe algun error, el analisis fue incorrecto, en caso contrario,
             // ? analisis correcto

@@ -1,9 +1,12 @@
 package compilador;
 
+import compilador.TablaToken.Token;
+
 public class Lexico {
 
     private StringBuilder buffer;
     private int i, linea, columna;
+    private boolean genTkn, ban = true;
 
     /**
      * Metodo que inicializa/reinicia todos los elementos para el analisis
@@ -18,6 +21,8 @@ public class Lexico {
         i = 0;
         linea = 1;
         columna = 1;
+
+        genTkn = false;
     }
 
     /**
@@ -31,32 +36,64 @@ public class Lexico {
 
         while (i < entrada.length()) {
             char actual = entrada.charAt(i);
+            genTkn = false; // ? Verificar que se genero un token
 
-            if (manejarEspaciosYSaltos(actual))
+            if (manejarEspaciosYSaltos(actual)) {
+                llamarSintactico();
                 continue;
-            if (manejarIdentificadoresYPalabrasReservadas(entrada))
+            }
+            if (manejarIdentificadoresYPalabrasReservadas(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarNumeros(entrada))
+            }
+            if (manejarNumeros(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarCadenas(entrada))
+            }
+            if (manejarCadenas(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarCaracteres(entrada))
+            }
+            if (manejarCaracteres(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarComentarios(entrada))
+            }
+            if (manejarComentarios(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarOperadoresDobles(entrada))
+            }
+            if (manejarOperadoresDobles(entrada)) {
+                llamarSintactico();
                 continue;
-            if (manejarOperadoresYSimbolos(actual))
+            }
+            if (manejarOperadoresYSimbolos(actual)) {
+                llamarSintactico();
                 continue;
+            }
 
             manejarCaracterInvalido(actual);
-
-            // ? Llamada de sintactico
 
         }
 
         App.tbl_token.AgregarToken("$", linea, columna, "$");
+        genTkn = true;
+        llamarSintactico();
         App.tbl_token.ResetPos();
+    }
+
+    // ? Metodo encargado del llamado del sintactico para el envio de tokens
+    private void llamarSintactico() {
+        Token token;
+        if (!ban) { // ? Determina la pauta de seguir analizando junto al sintactico o no
+            return;
+        }
+
+        if (genTkn) {
+            token = App.tbl_token.SiguienteToken();
+            if (token == null)
+                ban = false;
+            ban = App.sin.AnalizarToken(token);
+        }
     }
 
     /**
@@ -111,9 +148,11 @@ public class Lexico {
             if (App.tbl_sim_res.containsKey(palabra)) {
                 App.tbl_token.AgregarToken(App.tbl_sim_res.get(palabra), linea, startColumna, palabra);
                 App.cad_cod += palabra;
+                genTkn = true;
             } else {
                 App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
                 App.cad_cod += "ID";
+                genTkn = true;
             }
         else
             App.tbl_error.agregarError("LEXICO", palabra, linea + "", startColumna + "", "Identificador invalido.");
@@ -157,10 +196,12 @@ public class Lexico {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LNUM", numero, numero, "int") + "");
             App.cad_cod += "LNUM";
+            genTkn = true;
         } else if (numero.matches("\\d+\\.\\d+")) {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LDEC", numero, numero, "float") + "");
             App.cad_cod += "LDEC";
+            genTkn = true;
         } else if (numero.endsWith(".") || numero.startsWith("."))
             App.tbl_error.agregarError("LEXICO", "", linea + "", startColumna + "", "Numero incompleto");
         else
@@ -216,6 +257,7 @@ public class Lexico {
         App.tbl_token.AgregarToken("LITERAL", startLinea, startColumna,
                 App.tbl_lit.AgregarLit("LCAD", buffer.toString(), "\"" + buffer.toString() + "\"", "cadena") + "");
         App.cad_cod += "LCAD";
+        genTkn = true;
         return true;
     }
 
@@ -262,6 +304,7 @@ public class Lexico {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LCAR", buffer.toString(), "\'" + buffer.toString() + "\'", "char") + "");
             App.cad_cod += "LCAR";
+            genTkn = true;
         } else
             App.tbl_error.agregarError("LEXICO", "Mas de un caracter", linea + "", startColumna + "", "Char invalido");
 
@@ -337,6 +380,7 @@ public class Lexico {
         if (App.tbl_sim_res.containsKey(doble)) {
             App.tbl_token.AgregarToken(App.tbl_sim_res.get(doble), linea, columna, doble);
             App.cad_cod += doble;
+            genTkn = true;
             i += 2;
             columna += 2;
             return true;
@@ -355,6 +399,7 @@ public class Lexico {
         if (App.tbl_sim_res.containsKey(single)) {
             App.tbl_token.AgregarToken(App.tbl_sim_res.get(single), linea, columna++, single);
             App.cad_cod += single;
+            genTkn = true;
             i++;
             return true;
         }

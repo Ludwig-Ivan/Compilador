@@ -18,13 +18,18 @@ public class TablaToken {
 
     private static List<Token> tbl_tokens;
     private static ListIterator<Token> tbIterator;
+    private int pos;
 
     public TablaToken() {
         tbl_tokens = new ArrayList<>();
+        tbIterator = tbl_tokens.listIterator();
     }
 
     public void AgregarToken(String tipo, int linea, int columna, String ref) {
-        tbl_tokens.add(new Token(tipo, linea, columna, ref));
+        Token tkn = new Token(tipo, linea, columna, ref);
+        pos = tbIterator.nextIndex();
+        tbIterator.add(tkn);
+        tbIterator = tbl_tokens.listIterator(pos);
     }
 
     public void ResetPos() {

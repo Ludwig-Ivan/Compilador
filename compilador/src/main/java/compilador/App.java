@@ -25,6 +25,7 @@ public class App extends Application {
     public static TablaError tbl_error;
     public static HashMap<String, String> tbl_sim_res;
     public static String cad_cod = "";
+    public static Sintactico sin;
 
     // ? Inicializador de Instancia de la clase
     {
