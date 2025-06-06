@@ -236,7 +236,11 @@ public class Pestana extends StackPane {
     }
 
     public String getSelectedText() {
-    return codeArea.getSelectedText();  // Suponiendo que usas un TextArea llamado textArea
-}
+        return codeArea.getSelectedText(); // Suponiendo que usas un TextArea llamado textArea
+    }
+
+    public void setFontSize(int fontsize) {
+        codeArea.setStyle(String.format("-fx-font-size: %dpx;", fontsize));
+    }
 
 }
