@@ -23,11 +23,17 @@ public class TablaError {
     // Mostrar errores
     @SuppressWarnings("exports")
     public void MostrarErrores(TextArea component) {
+        int lin = 0;
+        String tipo = "";
         if (!errores.isEmpty()) {
             component.clear();
-            for (Error e : errores)
-                component.appendText(e.toString());
-
+            for (Error e : errores) {
+                if (lin != Integer.parseInt(e.getLinea()) && !tipo.equals(e.getTipo())) {
+                    lin = Integer.parseInt(e.getLinea());
+                    tipo = e.getTipo();
+                    component.appendText(e.toString());
+                }
+            }
         }
     }
 
@@ -74,9 +80,8 @@ public class TablaError {
 
         @Override
         public String toString() {
-            return String.format("Error [%s] en la linea %s, columna %s : %s ( %s ) \n", tipo, linea, columna,
-                    desc.contains("$") ? desc.replace("$", "<Fin de archivo>") : desc,
-                    lexema.equals("$") ? "Fin de archivo" : lexema);
+            return String.format("Error [%s] en la linea %s : %s \n", tipo, linea,
+                    desc.contains("$") ? desc.replace("$", "<Fin de archivo>") : desc);
         }
     }
 }

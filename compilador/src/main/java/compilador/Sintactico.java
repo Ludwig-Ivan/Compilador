@@ -15,7 +15,7 @@ import compilador.TablaToken.Token;
 
 public class Sintactico {
 
-    private Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
+    public Stack<String> pila = new Stack<>(); // ? Se encarga de resguardar la estructura correcta del programa
     private HashMap<String, String> tbl_ll = new HashMap<>(); // ? estructura que reguarda la tabla LL
     private Vector<String> term; // ? Lista de terminales
     public List<String> historial_pila;
@@ -25,39 +25,39 @@ public class Sintactico {
     {
         descripciones.put("P", "< programa >");
         descripciones.put("D's", "< declaracion >");
-        descripciones.put("LD", "< ID >");
-        descripciones.put("LD'", "< , >");
-        descripciones.put("As", "< =, ; >");
-        descripciones.put("F's", "< func, procedure >");
-        descripciones.put("Pm", "< int bool float char cadena >");
-        descripciones.put("Pm'", " < , >");
+        descripciones.put("LD", "< identificador >");
+        descripciones.put("LD'", "< asignacion+ >");
+        descripciones.put("As", "< asignacion >");
+        descripciones.put("F's", "< funcion procedimiento >");
+        descripciones.put("Pm", "< tipo dato >");
+        descripciones.put("Pm'", " < parametro+ >");
         descripciones.put("S's", "< sentencia >");
         descripciones.put("S", "< asignacion, condicional, ciclo, salto, lfunc, lproced print >");
-        descripciones.put("A'", "< = -= += *= /= >");
+        descripciones.put("A'", "< operador de asignacion >");
         descripciones.put("C'", "< else >");
-        descripciones.put("C''", "< {, if >");
-        descripciones.put("FI", "< ID >");
-        descripciones.put("LFI", "< , >");
+        descripciones.put("C''", "< bloque >");
+        descripciones.put("FI", "< identificador >");
+        descripciones.put("LFI", "< asignacion+ >");
         descripciones.put("FC", "< expresion >");
-        descripciones.put("FU", "< ID >");
-        descripciones.put("LFU", "< , >");
+        descripciones.put("FU", "< identificador >");
+        descripciones.put("LFU", "< asignacion+ >");
         descripciones.put("RV", "< expresion >");
         descripciones.put("Ag", "< expresion >");
-        descripciones.put("Ag'", "< , >");
-        descripciones.put("T", "< int, float, char, cadena, bool >");
+        descripciones.put("Ag'", "< argumento+ >");
+        descripciones.put("T", "< tipo dato >");
         descripciones.put("E", "< expresión >");
-        descripciones.put("E'", "< ? >");
+        descripciones.put("E'", "< ternario >");
         descripciones.put("E1", "< expresion >");
-        descripciones.put("E1'", "< &&, || >");
+        descripciones.put("E1'", "< operador logico >");
         descripciones.put("E2", "< expresion >");
-        descripciones.put("E2'", "< ==, !=, <, >, <=, >= >");
+        descripciones.put("E2'", "< operador relacional >");
         descripciones.put("E3", "< expresion >");
-        descripciones.put("E3'", "< +, - >");
+        descripciones.put("E3'", "< operador aritmetico >");
         descripciones.put("E4", "< expresion >");
-        descripciones.put("E4'", "< *, /, % >");
-        descripciones.put("E5", "< -, !, Factor >");
-        descripciones.put("FA", "< numero, decimal, caracter, llamada, true, false, ID, read >");
-        descripciones.put("OU", "< -, ! >");
+        descripciones.put("E4'", "< operador aritmetico >");
+        descripciones.put("E5", "< factor >");
+        descripciones.put("FA", "< factor >");
+        descripciones.put("OU", "< unario >");
         descripciones.put("$", "< fin de cadena >");
         descripciones.put("default", "un elemento del lenguaje");
     }
@@ -84,7 +84,6 @@ public class Sintactico {
      *         de no poder analizar el token.
      */
     public boolean AnalizarToken(Token token) {
-
         historial_pila.add(pila + "");
         if (!extraerDatosToken(token))
             return false;
@@ -139,17 +138,19 @@ public class Sintactico {
                 return true; // Continuo al siguiente toquen
             } else {
                 App.tbl_error.agregarError("SINTACTICO", pila.pop(), linea, columna,
-                        String.format("Se esperaba %s, se encontro", lit.getRep_text()));
+                        String.format("Se esperaba %s", cima));
                 return AnalizarToken(token);
             }
         }
 
-        if (cima.equals(tipo) || cima.equals(ref)) {
+        if (cima.equals(
+                tipo.equals("ID") || tipo.equals("IDF") || tipo.equals("IDM") || tipo.equals("IDP") ? "ID" : tipo)
+                || cima.equals(ref)) {
             pila.pop();
             return true;
         } else {
             App.tbl_error.agregarError("SINTACTICO", ref, linea, columna,
-                    String.format("Se esperaba %s, se encontro", pila.pop()));
+                    String.format("Se esperaba %s", pila.pop()));
             return AnalizarToken(token);
         }
     }
@@ -174,7 +175,8 @@ public class Sintactico {
                 return AnalizarToken(token); // Reprocesar el mismo token al siguiente elemento en la pila
             case "`":
                 String ref = "?";
-                if (token.getTipo().equals("ID")) {
+                if (token.getTipo().equals("ID") || token.getTipo().equals("IDM") || token.getTipo().equals("IDF")
+                        || token.getTipo().equals("IDP")) {
                     ref = App.tbl_id.BuscarID(Integer.parseInt(token.getRef())).getNom();
                 } else if (token.getTipo().equals("LITERAL")) {
                     ref = App.tbl_lit.BuscarID(Integer.parseInt(token.getRef())).getValor();
@@ -184,13 +186,13 @@ public class Sintactico {
                 App.tbl_error.agregarError("SINTACTICO", ref.replace("\n", "").replace(" ", ""),
                         token.getLinea() + "",
                         token.getColumna() + "",
-                        String.format("Se esperaba %s, se encontro", descripcion));
+                        String.format("Se esperaba %s", descripcion));
                 pila.push(prod_act);
                 return true; // Avanzar token
             case "\"\"\"\"":
                 App.tbl_error.agregarError("SINTACTICO", token.getRef(), token.getLinea() + "",
                         token.getColumna() + "",
-                        String.format("Se esperaba %s, se encontro", descripcion));
+                        String.format("Se esperaba %s", descripcion));
                 return AnalizarToken(token); // Reintentar con el mismo token
             default:
                 return true;
@@ -232,8 +234,8 @@ public class Sintactico {
      * @return Produccion siguiente en la tabla LL
      */
     private String obtenerClaveProduccion(String prod_act) {
-        if (tipo.equals("ID")) {
-            return String.format("%s,%s", prod_act, tipo);
+        if (tipo.equals("ID") || tipo.equals("IDM") || tipo.equals("IDF") || tipo.equals("IDP")) {
+            return String.format("%s,%s", prod_act, "ID");
         }
 
         if (tipo.equals("LITERAL")) {
@@ -308,4 +310,5 @@ public class Sintactico {
             System.out.println("Error al importar la tbl: " + e);
         }
     }
+
 }

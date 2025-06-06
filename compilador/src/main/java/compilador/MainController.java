@@ -48,20 +48,33 @@ public class MainController {
     @FXML
     private MenuItem MenuItemNuevo, MenuItemAbrir, MenuItemGuardar, MISalir, MIRutas;
     @FXML
-    private TextArea TxtSinRes, TxtConsola;
+    private TextArea TxtSinRes, TxtConsola, TxtPseudo;
     @FXML
     TableView<Token> TblTokens;
     @FXML
     TableView<Literal> TblLit;
     @FXML
     TreeView<File> TVArc;
-    @FXML
-    private Parent root; // Puede ser AnchorPane, BorderPane, etc. con fx:id="root"
 
     @FXML
     public void initialize() {
         // ArbolProyecto arb = new ArbolProyecto(App.rutaProyecto, TVArc);
         Platform.runLater(() -> {
+            Tab t = null;
+            for (Tab a : TabTbls.getTabs()) {
+                if (a.getText().equals("Componentes")) {
+                    t = a;
+                    break;
+                }
+            }
+            if (t != null)
+                TabTbls.getTabs().remove(t);
+
+            TxtSinRes.setEditable(false);
+            TxtConsola.setEditable(false);
+            TxtConsola.setPickOnBounds(false);
+            TxtPseudo.setEditable(false);
+
             if (App.mode.equals("white")) {
                 AccionBtnModoClaro();
             } else {
@@ -144,7 +157,7 @@ public class MainController {
         directoryChooser.setTitle("Selecciona una carpeta");
         File arc = directoryChooser.showDialog(ToolBarBtnAbrir.getParent().getScene().getWindow());
         App.rutaProyecto = arc.getAbsolutePath();
-        // ArbolProyecto arb = new ArbolProyecto(arc.getAbsolutePath(), TVArc);
+        ArbolProyecto arb = new ArbolProyecto(arc.getAbsolutePath(), TVArc);
     }
 
     @FXML
@@ -427,30 +440,21 @@ public class MainController {
             Pestana pestana = (Pestana) tab.getContent();
             String entrada = pestana.getText();
             Lexico lex = new Lexico();
-            Sintactico sin = new Sintactico("P");
-            boolean ban = true;
-            Token token;
-
+            App.cad_cod = "";
+            App.sin = new Sintactico("P");
             TxtConsola.clear();
             limpiarTblTab();
-            sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
+            App.sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
+            TxtPseudo.setText(App.cad_cod);
 
-            // ? Control de seguimiento para analisis de tokens
-            while (ban) {
-                token = App.tbl_token.SiguienteToken();
-                if (token == null)
-                    break;
-                ban = sin.AnalizarToken(token);
-            }
-
-            App.tbl_token.MostrarTokens(TblTokens);
+            // App.tbl_token.MostrarTokens(TblTokens);
             App.tbl_lit.MostrarLits(TblLit);
             App.tbl_error.MostrarErrores(TxtConsola);
 
             TxtSinRes.clear();
             TxtSinRes.appendText("Pila:\n");
-            sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
+            App.sin.historial_pila.forEach(e -> TxtSinRes.appendText(e + "\n"));
 
             // ? Si existe algun error, el analisis fue incorrecto, en caso contrario,
             // ? analisis correcto
@@ -594,7 +598,10 @@ public class MainController {
         List<Tab> pest = new ArrayList<>();
 
         for (Tab t : TabTbls.getTabs()) {
-            if (t.getText().equals("Tokens") || t.getText().equals("Literales") || t.getText().equals("Sintactico")) {
+            if (t.getText().equals("Componentes") || t.getText().equals("Comp. Lexicos")
+                    || t.getText().equals("Pseudocodigo")
+                    || t.getText().equals("Literales")
+                    || t.getText().equals("Sintactico")) {
                 pest.add(t);
             }
         }

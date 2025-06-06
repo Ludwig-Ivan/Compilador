@@ -3,6 +3,9 @@ package compilador;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
+import compilador.TablaID.Identificador;
+import compilador.TablaLit.Literal;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,13 +18,18 @@ public class TablaToken {
 
     private static List<Token> tbl_tokens;
     private static ListIterator<Token> tbIterator;
+    private int pos;
 
     public TablaToken() {
         tbl_tokens = new ArrayList<>();
+        tbIterator = tbl_tokens.listIterator();
     }
 
     public void AgregarToken(String tipo, int linea, int columna, String ref) {
-        tbl_tokens.add(new Token(tipo, linea, columna, ref));
+        Token tkn = new Token(tipo, linea, columna, ref);
+        pos = tbIterator.nextIndex();
+        tbIterator.add(tkn);
+        tbIterator = tbl_tokens.listIterator(pos);
     }
 
     public void ResetPos() {
@@ -44,21 +52,36 @@ public class TablaToken {
 
         tabla.getColumns().clear();
 
-        TableColumn<Token, String> columnTipo = new TableColumn<>("Tipo");
+        TableColumn<Token, String> columnTipo = new TableColumn<>("Comp");
         columnTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        TableColumn<Token, String> columnReferencia = new TableColumn<>("Referencia");
+        TableColumn<Token, String> columnReferencia = new TableColumn<>("Lexema");
         columnReferencia.setCellValueFactory(new PropertyValueFactory<>("ref"));
-        TableColumn<Token, String> columnLinea = new TableColumn<>("Linea");
-        columnLinea.setCellValueFactory(new PropertyValueFactory<>("linea"));
-        TableColumn<Token, String> columnColumna = new TableColumn<>("Columna");
-        columnColumna.setCellValueFactory(new PropertyValueFactory<>("columna"));
+        // TableColumn<Token, String> columnLinea = new TableColumn<>("Linea");
+        // columnLinea.setCellValueFactory(new PropertyValueFactory<>("linea"));
+        // TableColumn<Token, String> columnColumna = new TableColumn<>("Columna");
+        // columnColumna.setCellValueFactory(new PropertyValueFactory<>("columna"));
 
-        tabla.getColumns().addAll(columnTipo, columnLinea, columnColumna, columnReferencia);
+        tabla.getColumns().addAll(columnTipo, /* columnLinea, columnColumna, */ columnReferencia);
 
         ObservableList<Token> datos = FXCollections.observableArrayList();
 
-        for (Token id : tbl_tokens)
+        for (Token id : tbl_tokens) {
+
+            if (id.getTipo().equals("ID") || id.getTipo().equals("IDM") || id.getTipo().equals("IDF")
+                    || id.getTipo().equals("IDP")) {
+                Identificador i = App.tbl_id.BuscarID(Integer.parseInt(id.getRef()));
+                datos.add(new Token(id.getTipo(), id.getLinea(), id.getColumna(), i.getNom()));
+                continue;
+            }
+
+            if (id.getTipo().equals("LITERAL")) {
+                Literal l = App.tbl_lit.BuscarID(Integer.parseInt(id.getRef()));
+                datos.add(new Token(id.getTipo(), id.getLinea(), id.getColumna(), l.getComp()));
+                continue;
+            }
+
             datos.add(id);
+        }
 
         tabla.setItems(datos);
 
