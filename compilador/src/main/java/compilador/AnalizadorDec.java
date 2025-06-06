@@ -42,7 +42,7 @@ public class AnalizadorDec {
                     tkn = App.tbl_token.SiguienteToken();
                     if (tkn != null && tkn.getTipo().equals("ID")) {
                         String id = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
-                        tbl_manager.insertarID("ID", "", "", id, "");
+                        tbl_manager.insertarID("ID", "", ToR, id, "");
                     } else {
                         System.out.println("Error: se esperaba identificador tras tipo de dato");
                     }
@@ -76,7 +76,7 @@ public class AnalizadorDec {
                             tkn = App.tbl_token.SiguienteToken(); // ID
                             if (tkn != null && tkn.getTipo().equals("ID")) {
                                 String idParam = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
-                                tbl_manager.insertarID("ID", tipoParam, "", idParam, "");
+                                tbl_manager.insertarID("ID", "", tipoParam, idParam, "");
                                 tkn = App.tbl_token.SiguienteToken();
                                 if (tkn.getRef().equals(",")) {
                                     tkn = App.tbl_token.SiguienteToken();
