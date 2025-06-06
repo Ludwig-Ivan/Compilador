@@ -58,6 +58,20 @@ public class MainController {
     public void initialize() {
         // ArbolProyecto arb = new ArbolProyecto(App.rutaProyecto, TVArc);
         Platform.runLater(() -> {
+            Tab t = null;
+            for (Tab a : TabTbls.getTabs()) {
+                if (a.getText().equals("Componentes")) {
+                    t = a;
+                    break;
+                }
+            }
+            if (t != null)
+                TabTbls.getTabs().remove(t);
+
+            TxtSinRes.setEditable(false);
+            TxtConsola.setEditable(false);
+            TxtConsola.setPickOnBounds(false);
+            TxtPseudo.setEditable(false);
 
             if (App.mode.equals("white")) {
                 AccionBtnModoClaro();
@@ -382,7 +396,7 @@ public class MainController {
             lex.Analizar(entrada); // ? Mandamos la entrada de codigo a lexico
             TxtPseudo.setText(App.cad_cod);
 
-            App.tbl_token.MostrarTokens(TblTokens);
+            // App.tbl_token.MostrarTokens(TblTokens);
             App.tbl_lit.MostrarLits(TblLit);
             App.tbl_error.MostrarErrores(TxtConsola);
 
@@ -532,7 +546,8 @@ public class MainController {
         List<Tab> pest = new ArrayList<>();
 
         for (Tab t : TabTbls.getTabs()) {
-            if (t.getText().equals("Componentes") || t.getText().equals("Pseudocodigo")
+            if (t.getText().equals("Componentes") || t.getText().equals("Comp. Lexicos")
+                    || t.getText().equals("Pseudocodigo")
                     || t.getText().equals("Literales")
                     || t.getText().equals("Sintactico")) {
                 pest.add(t);

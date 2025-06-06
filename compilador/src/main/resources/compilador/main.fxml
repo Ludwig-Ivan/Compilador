@@ -352,7 +352,7 @@
                      </opaqueInsets></TabPane>
               <TabPane fx:id="TabTbls" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                 <tabs>
-                        <Tab text="Pseudocodigo">
+                        <Tab text="Comp. Lexicos">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -403,7 +403,7 @@
       </SplitPane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <TextArea fx:id="TxtConsola" prefHeight="107.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+            <TextArea fx:id="TxtConsola" prefHeight="107.0" prefWidth="600.0" promptText="Consola de Errores" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
          </children>
       </AnchorPane>
       </items>

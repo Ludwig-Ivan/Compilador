@@ -138,7 +138,7 @@ public class Sintactico {
                 return true; // Continuo al siguiente toquen
             } else {
                 App.tbl_error.agregarError("SINTACTICO", pila.pop(), linea, columna,
-                        String.format("Se esperaba %s", lit.getRep_text()));
+                        String.format("Se esperaba %s", cima));
                 return AnalizarToken(token);
             }
         }

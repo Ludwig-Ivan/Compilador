@@ -81,8 +81,7 @@ public class TablaError {
         @Override
         public String toString() {
             return String.format("Error [%s] en la linea %s : %s \n", tipo, linea,
-                    desc.contains("$") ? desc.replace("$", "<Fin de archivo>") : desc,
-                    lexema.equals("$") ? "Fin de archivo" : lexema);
+                    desc.contains("$") ? desc.replace("$", "<Fin de archivo>") : desc);
         }
     }
 }
