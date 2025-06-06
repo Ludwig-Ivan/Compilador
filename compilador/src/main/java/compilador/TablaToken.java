@@ -67,7 +67,8 @@ public class TablaToken {
 
         for (Token id : tbl_tokens) {
 
-            if (id.getTipo().equals("ID")) {
+            if (id.getTipo().equals("ID") || id.getTipo().equals("IDM") || id.getTipo().equals("IDF")
+                    || id.getTipo().equals("IDP")) {
                 Identificador i = App.tbl_id.BuscarID(Integer.parseInt(id.getRef()));
                 datos.add(new Token(id.getTipo(), id.getLinea(), id.getColumna(), i.getNom()));
                 continue;

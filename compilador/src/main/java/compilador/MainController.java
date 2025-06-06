@@ -375,8 +375,8 @@ public class MainController {
             Pestana pestana = (Pestana) tab.getContent();
             String entrada = pestana.getText();
             Lexico lex = new Lexico();
+            App.cad_cod = "";
             App.sin = new Sintactico("P");
-
             TxtConsola.clear();
             limpiarTblTab();
             App.sin.importarExcel(getClass().getResourceAsStream("/compilador/Simbolos_MegaVerdaderos.txt"));

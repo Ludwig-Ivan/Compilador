@@ -6,7 +6,7 @@ public class Lexico {
 
     private StringBuilder buffer;
     private int i, linea, columna;
-    private boolean genTkn, ban = true;
+    private boolean genTkn, ban = true, banprog = false, banfunc = false, banproc = false;
 
     /**
      * Metodo que inicializa/reinicia todos los elementos para el analisis
@@ -149,9 +149,32 @@ public class Lexico {
                 App.tbl_token.AgregarToken(App.tbl_sim_res.get(palabra), linea, startColumna, palabra);
                 App.cad_cod += palabra;
                 genTkn = true;
+                if (palabra.equals("program")) {
+                    banprog = true;
+                }
+                if (palabra.equals("func")) {
+                    banfunc = true;
+                }
+                if (palabra.equals("procedure")) {
+                    banproc = true;
+                }
             } else {
-                App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
-                App.cad_cod += "ID";
+                if (banprog) {
+                    App.tbl_token.AgregarToken("IDM", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+                    App.cad_cod += "IDM";
+                    banprog = false;
+                } else if (banfunc) {
+                    App.tbl_token.AgregarToken("IDF", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+                    App.cad_cod += "IDF";
+                    banfunc = false;
+                } else if (banproc) {
+                    App.tbl_token.AgregarToken("IDP", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+                    App.cad_cod += "IDP";
+                    banproc = false;
+                } else {
+                    App.tbl_token.AgregarToken("ID", linea, startColumna, App.tbl_id.AgregarID(palabra) + "");
+                    App.cad_cod += "ID";
+                }
                 genTkn = true;
             }
         else
@@ -197,11 +220,17 @@ public class Lexico {
                     App.tbl_lit.AgregarLit("LNUM", numero, numero, "int") + "");
             App.cad_cod += "LNUM";
             genTkn = true;
+            banprog = false;
+            banfunc = false;
+            banproc = false;
         } else if (numero.matches("\\d+\\.\\d+")) {
             App.tbl_token.AgregarToken("LITERAL", linea, startColumna,
                     App.tbl_lit.AgregarLit("LDEC", numero, numero, "float") + "");
             App.cad_cod += "LDEC";
             genTkn = true;
+            banprog = false;
+            banfunc = false;
+            banproc = false;
         } else if (numero.endsWith(".") || numero.startsWith("."))
             App.tbl_error.agregarError("LEXICO", "", linea + "", startColumna + "", "Numero incompleto");
         else
@@ -258,6 +287,9 @@ public class Lexico {
                 App.tbl_lit.AgregarLit("LCAD", buffer.toString(), "\"" + buffer.toString() + "\"", "cadena") + "");
         App.cad_cod += "LCAD";
         genTkn = true;
+        banprog = false;
+        banfunc = false;
+        banproc = false;
         return true;
     }
 
@@ -305,6 +337,9 @@ public class Lexico {
                     App.tbl_lit.AgregarLit("LCAR", buffer.toString(), "\'" + buffer.toString() + "\'", "char") + "");
             App.cad_cod += "LCAR";
             genTkn = true;
+            banprog = false;
+            banfunc = false;
+            banproc = false;
         } else
             App.tbl_error.agregarError("LEXICO", "Mas de un caracter", linea + "", startColumna + "", "Char invalido");
 
@@ -383,6 +418,9 @@ public class Lexico {
             genTkn = true;
             i += 2;
             columna += 2;
+            banprog = false;
+            banfunc = false;
+            banproc = false;
             return true;
         }
         return false;
@@ -401,6 +439,9 @@ public class Lexico {
             App.cad_cod += single;
             genTkn = true;
             i++;
+            banprog = false;
+            banfunc = false;
+            banproc = false;
             return true;
         }
         return false;

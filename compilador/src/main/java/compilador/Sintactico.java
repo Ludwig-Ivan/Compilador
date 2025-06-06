@@ -143,7 +143,9 @@ public class Sintactico {
             }
         }
 
-        if (cima.equals(tipo) || cima.equals(ref)) {
+        if (cima.equals(
+                tipo.equals("ID") || tipo.equals("IDF") || tipo.equals("IDM") || tipo.equals("IDP") ? "ID" : tipo)
+                || cima.equals(ref)) {
             pila.pop();
             return true;
         } else {
@@ -173,7 +175,8 @@ public class Sintactico {
                 return AnalizarToken(token); // Reprocesar el mismo token al siguiente elemento en la pila
             case "`":
                 String ref = "?";
-                if (token.getTipo().equals("ID")) {
+                if (token.getTipo().equals("ID") || token.getTipo().equals("IDM") || token.getTipo().equals("IDF")
+                        || token.getTipo().equals("IDP")) {
                     ref = App.tbl_id.BuscarID(Integer.parseInt(token.getRef())).getNom();
                 } else if (token.getTipo().equals("LITERAL")) {
                     ref = App.tbl_lit.BuscarID(Integer.parseInt(token.getRef())).getValor();
@@ -231,8 +234,8 @@ public class Sintactico {
      * @return Produccion siguiente en la tabla LL
      */
     private String obtenerClaveProduccion(String prod_act) {
-        if (tipo.equals("ID")) {
-            return String.format("%s,%s", prod_act, tipo);
+        if (tipo.equals("ID") || tipo.equals("IDM") || tipo.equals("IDF") || tipo.equals("IDP")) {
+            return String.format("%s,%s", prod_act, "ID");
         }
 
         if (tipo.equals("LITERAL")) {

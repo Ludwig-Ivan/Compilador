@@ -22,7 +22,7 @@ public class AnalizadorDec {
             switch (ToR) {
                 case "program": // Creacion de la tabla de simbolos general
                     tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("ID")) {
+                    if (tkn.getTipo().equals("IDM")) {
                         con++;
                         nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
                         tbl_manager.entrarScope(nombre);
@@ -48,7 +48,7 @@ public class AnalizadorDec {
 
                 case "func":
                     tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("ID")) {
+                    if (tkn.getTipo().equals("IDF")) {
                         con++;
                         nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
                         tbl_manager.insertarID("IDF", "", "", nombre, "");
@@ -61,7 +61,7 @@ public class AnalizadorDec {
 
                 case "procedure":
                     tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("ID")) {
+                    if (tkn.getTipo().equals("IDP")) {
                         con++;
                         nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
                         tbl_manager.insertarID("IDP", "", "", nombre, "");
