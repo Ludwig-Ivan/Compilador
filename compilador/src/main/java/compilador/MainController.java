@@ -53,13 +53,12 @@ public class MainController {
     TableView<Literal> TblLit;
     @FXML
     TreeView<File> TVArc;
-    @FXML
-    private Parent root; // Puede ser AnchorPane, BorderPane, etc. con fx:id="root"
 
     @FXML
     public void initialize() {
         // ArbolProyecto arb = new ArbolProyecto(App.rutaProyecto, TVArc);
         Platform.runLater(() -> {
+
             if (App.mode.equals("white")) {
                 AccionBtnModoClaro();
             } else {
