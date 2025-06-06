@@ -116,7 +116,10 @@ public class Lexico {
         if (Validator.esEspacio(actual)) {
             columna++;
             i++;
-            App.cad_cod += " ";
+            if (actual != '\t')
+                App.cad_cod += " ";
+            else
+                App.cad_cod += "\t";
             return true;
         }
         return false;

@@ -1,5 +1,7 @@
 package compilador;
 
+import java.util.Stack;
+
 import compilador.TablaToken.Token;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -14,21 +16,21 @@ public class AnalizadorDec {
     public void Analizar() {
         App.tbl_token.ResetPos();
         Token tkn = App.tbl_token.SiguienteToken();
-        String nombre, ToR;
-        int con = 0;
+        String nombre;
+        Stack<String> pilaScopes = new Stack<>();
 
         while (tkn != null) {
-            ToR = tkn.getRef();
-            switch (ToR) {
-                case "program": // Creacion de la tabla de simbolos general
-                    tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("IDM")) {
-                        con++;
-                        nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
-                        tbl_manager.entrarScope(nombre);
+            String ToR = tkn.getRef();
 
+            switch (ToR) {
+                case "program":
+                    tkn = App.tbl_token.SiguienteToken();
+                    if (tkn != null && tkn.getTipo().equals("IDM")) {
+                        nombre = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
+                        tbl_manager.entrarScope(nombre);
+                        pilaScopes.push(nombre);
                     } else {
-                        System.out.println("Error al entrar al scope principal");
+                        System.out.println("Error: se esperaba identificador tras 'program'");
                     }
                     break;
 
@@ -38,54 +40,95 @@ public class AnalizadorDec {
                 case "bool":
                 case "cadena":
                     tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("ID")) {
-                        tbl_manager.insertarID("ID", "", "",
-                                (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom(), "");
+                    if (tkn != null && tkn.getTipo().equals("ID")) {
+                        String id = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
+                        tbl_manager.insertarID("ID", "", "", id, "");
                     } else {
-                        System.out.println("Error al registrar la declaracion");
+                        System.out.println("Error: se esperaba identificador tras tipo de dato");
                     }
                     break;
 
                 case "func":
-                    tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("IDF")) {
-                        con++;
-                        nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
-                        tbl_manager.insertarID("IDF", "", "", nombre, "");
-                        tbl_manager.entrarScope(nombre);
-
-                    } else {
-                        System.out.println("Error al entrar al scope principal");
-                    }
-                    break;
-
                 case "procedure":
+                    boolean esFuncion = ToR.equals("func");
                     tkn = App.tbl_token.SiguienteToken();
-                    if (tkn.getTipo().equals("IDP")) {
-                        con++;
-                        nombre = (App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef()))).getNom();
-                        tbl_manager.insertarID("IDP", "", "", nombre, "");
-                        tbl_manager.entrarScope(nombre);
 
+                    if (tkn != null && ((esFuncion && tkn.getTipo().equals("IDF"))
+                            || (!esFuncion && tkn.getTipo().equals("IDP")))) {
+                        nombre = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
+                        tbl_manager.insertarID(tkn.getTipo(), "", "", nombre, nombre);
+                        tbl_manager.entrarScope(nombre);
+                        pilaScopes.push(nombre);
+
+                        // Función: esperar ": tipo"
+                        if (esFuncion) {
+                            tkn = App.tbl_token.SiguienteToken(); // ':'
+                            tkn = App.tbl_token.SiguienteToken(); // tipo
+                        }
+
+                        // Esperar '('
+                        tkn = App.tbl_token.SiguienteToken(); // '('
+
+                        // Leer parámetros
+                        tkn = App.tbl_token.SiguienteToken();
+                        while (tkn != null && !tkn.getRef().equals(")")) {
+                            String tipoParam = tkn.getRef();
+                            tkn = App.tbl_token.SiguienteToken(); // ID
+                            if (tkn != null && tkn.getTipo().equals("ID")) {
+                                String idParam = App.tbl_id.BuscarID(Integer.parseInt(tkn.getRef())).getNom();
+                                tbl_manager.insertarID("ID", tipoParam, "", idParam, "");
+                                tkn = App.tbl_token.SiguienteToken();
+                                if (tkn.getRef().equals(",")) {
+                                    tkn = App.tbl_token.SiguienteToken();
+                                }
+                            }
+                        }
+
+                        // Esperar '{'
+                        while (tkn != null && !tkn.getRef().equals("{")) {
+                            tkn = App.tbl_token.SiguienteToken();
+                        }
+
+                        // Procesar bloque
+                        int bloque = 1;
+                        while (bloque > 0 && (tkn = App.tbl_token.SiguienteToken()) != null) {
+                            if (tkn.getRef().equals("{"))
+                                bloque++;
+                            else if (tkn.getRef().equals("}"))
+                                bloque--;
+                        }
+
+                        // Salir del scope correctamente
+                        if (!pilaScopes.isEmpty()) {
+                            tbl_manager.salirScope();
+                            pilaScopes.pop();
+                        }
+
+                        // No avanzar más tokens aquí, ya lo hizo el while. Continuar con el bucle
+                        // principal
+                        continue;
                     } else {
-                        System.out.println("Error al entrar al scope principal");
+                        System.out.println("Error: identificador inválido tras 'func' o 'procedure'");
                     }
                     break;
 
+                // Las llaves externas no abren/cambian scope, ya estamos en el de 'program'
+                case "{":
                 case "}":
-                    con--;
-                    if (con == 1) {
-                        tbl_manager.setCimaRef(tbl_manager.salirScope());
-                    }
-                    if (con == 0) {
-                        tbl_manager.salirScope();
-                    }
+                    // Las ignoramos para evitar interferir con el control de scopes semánticos
                     break;
 
                 default:
                     break;
             }
+
             tkn = App.tbl_token.SiguienteToken();
+        }
+
+        // Aseguramos el cierre del scope principal si quedó abierto
+        while (!pilaScopes.isEmpty()) {
+            tbl_manager.salirScope();
+            pilaScopes.pop();
         }
     }
 
